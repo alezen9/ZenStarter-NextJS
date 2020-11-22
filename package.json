@@ -1,0 +1,44 @@
+{
+  "name": "zen-starter",
+  "version": "4.0.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "4.11.0",
+    "@material-ui/icons": "4.9.1",
+    "@material-ui/lab": "latest",
+    "@nivo/radar": "^0.62.0",
+    "axios": "0.20.0",
+    "clean-deep": "3.4.0",
+    "dayjs": "^1.9.6",
+    "formik": "2.1.5",
+    "framer-motion": "2.6.15",
+    "immer": "^7.0.7",
+    "match-sorter": "^5.0.0",
+    "material-ui-phone-number": "2.2.6",
+    "next": "10.0.1",
+    "next-pwa": "3.1.4",
+    "nprogress": "^0.2.0",
+    "react": "16.13.1",
+    "react-detect-offline": "latest",
+    "react-dom": "16.13.1",
+    "react-places-autocomplete": "7.3.0",
+    "react-window": "1.8.5",
+    "swr": "^0.3.2",
+    "yup": "0.29.3",
+    "zustand": "^3.1.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=production ENV=production next start --port=3000",
+    "start-test": "NODE_ENV=production ENV=test next start",
+    "build-test": "NODE_ENV=production ENV=test PORT=3000 next build",
+    "build-production": "NODE_ENV=production ENV=production PORT=3000 next build",
+    "dev": "NODE_ENV=test ENV=test next"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.161",
+    "@types/node": "^14.6.2",
+    "@types/react": "^16.9.48",
+    "typescript": "^4.0.2"
+  }
+}
