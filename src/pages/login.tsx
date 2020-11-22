@@ -16,7 +16,7 @@ const Copyright = () => {
   return (
     <Grid container item xs={12} justify='center'>
       <Typography variant='caption' align='center'>
-        {`Copyright © FutBob ${new Date().getFullYear()}`}
+        {`Copyright © ZenStarter ${new Date().getFullYear()}`}
       </Typography>
     </Grid>
   )

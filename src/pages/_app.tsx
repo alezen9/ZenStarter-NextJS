@@ -40,7 +40,7 @@ const MyApp = (props: AppProps) => {
 
   return <>
    <ZenApp
-      title='FutBob'
+      title='ZenStarter'
       LSVariables={{ AS_PATH, LSTheme, LSToken }}
       swrConfig={{ onError }}
       SplashscreenIcon={<AcUnitRoundedIcon style={{ fontSize: '6em' }} />}>

@@ -14,11 +14,11 @@ export default class MyDocument extends Document {
           <meta name='description' content='J.A.R.V.I.S.' />
           <meta name='keywords' content='Keywords' />
           <meta name='mobile-web-app-capable' content='yes' />
-          <meta name='apple-mobile-web-app-title' content='FutBob' />
+          <meta name='apple-mobile-web-app-title' content='ZenStarter' />
           <meta name='apple-mobile-web-app-capable' content='yes' />
           <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
-          <meta name='application-name' content='FutBob' />
-          <meta name='msapplication-tooltip' content='FutBob' />
+          <meta name='application-name' content='ZenStarter' />
+          <meta name='msapplication-tooltip' content='ZenStarter' />
           <meta name='msapplication-starturl' content='/' />
           <meta name='msapplication-tap-highlight' content='no' />
 
@@ -29,8 +29,8 @@ export default class MyDocument extends Document {
           <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
           <link rel='manifest' href='/site.webmanifest' />
           <link rel='mask-icon' href='/safari-pinned-tab.svg' color='#5bbad5' />
-          <meta name='apple-mobile-web-app-title' content='FutBob' />
-          <meta name='application-name' content='FutBob' />
+          <meta name='apple-mobile-web-app-title' content='ZenStarter' />
+          <meta name='application-name' content='ZenStarter' />
           <meta name='msapplication-TileColor' content='#00aba9' />
           <meta name='theme-color' content='#ffffff' />
 
