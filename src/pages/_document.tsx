@@ -141,7 +141,6 @@ export default class MyDocument extends Document {
           </noscript>
           <Main />
           <NextScript />
-          {/* <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAKgYkl0eoObprgXkXU_Xd6ZqYJMvPaNZ8&libraries=places' /> */}
         </body>
       </Html>
     )
