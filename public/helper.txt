@@ -1,0 +1,3 @@
+1. Create png icon 512x512
+2. visit https://www.simicart.com/manifest-generator.html/ and create a webmanifest with icons
+3. copy, paste and replace icons in the icons folder and/or manifest in the public directory

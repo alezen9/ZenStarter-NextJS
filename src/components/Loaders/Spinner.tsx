@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core'
-import { ZenPalette } from '@_palette'
+import { ZenPalette } from '../../../palette'
 
 const useStyles = makeStyles({
   ldsEllipsis: {

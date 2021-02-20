@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode, useCallback, useState } from 'react';
+import React, { ReactElement, ReactNode, useCallback, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { get, uniqueId } from 'lodash';
 import Controls from './Controls';
@@ -24,16 +24,20 @@ type Props = {
   disableNext?: boolean
   disablePrev?: boolean
   flowConfig?: StepperFlowConfig
-  resetButton?: ReactElement
+  FinalActions?: ReactElement
 }
 
-const ZenStepper = (props: Props) => {
-  const { children = [], safeGuard, OnCompleteStep, disableNext, disablePrev, resetButton } = props
-  const { updateStatus } = (props.flowConfig || {}) as StepperFlowConfig
+const ZenStepper: React.FC<Props> = props => {
+  const { children = [], safeGuard, OnCompleteStep, disableNext, disablePrev, FinalActions } = props
+  const { updateStatus, setActiveStepRef } = (props.flowConfig || {}) as StepperFlowConfig
   const classes = useStyles()
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'))
   const [activeStep, setActiveStep] = useState(0)
+
+  useEffect(() => {
+     setActiveStepRef.current = setActiveStep
+  }, [])
 
   const handleNext = useCallback(() => {
     setActiveStep(state => {
@@ -87,7 +91,7 @@ const ZenStepper = (props: Props) => {
         {activeStep === children.length
           ? OnCompleteStep || <>Fine</>
           : get(children, `${activeStep}.props.component`, <>Unknown component</>)}
-        <Controls {...{ nSteps: children.length, handleBack, handleNext, handleReset, activeStep, disableNext, disablePrev, resetButton }} />
+        <Controls {...{ nSteps: children.length, handleBack, handleNext, handleReset, activeStep, disableNext, disablePrev, FinalActions }} />
       </Grid>
     </div>
   )
@@ -102,7 +106,6 @@ type ZenStepProps = {
   component: ReactNode
 }
 
-// @ts-ignore
 export const ZenStep = (props: ZenStepProps) => <div {...props} />
 
 const useCustomIconStyles = makeStyles(theme => ({

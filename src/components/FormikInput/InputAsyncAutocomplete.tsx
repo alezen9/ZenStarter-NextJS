@@ -131,7 +131,7 @@ const InputAsyncAutocomplete = (props: Props) => {
             setShouldFetch(e && e.type === 'change')
           }          
         }}
-        renderInput={params => <TextField {...params} {...isFetching && { InputProps: inputProps }} placeholder='Cerca . . .' label={label} variant='outlined' />}
+        renderInput={params => <TextField {...params} {...isFetching && { InputProps: inputProps }} placeholder='Search . . .' label={label} variant='outlined' />}
       />
       {get(errors, name, false) && <FormHelperText margin='dense' style={{ color: 'red', margin: '12px 14px 0 14px' }} id={`${id}_error`}>{get(errors, name, '')}</FormHelperText>}
     </>

@@ -64,7 +64,7 @@ const Inputslider = (props: Props) => {
         value={localVal}
         onChange={onLocalChange}
         onChangeCommitted={onChange}
-        valueLabelDisplay='auto' />
+        valueLabelDisplay='on' />
     </div>
   )
 }

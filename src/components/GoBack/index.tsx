@@ -6,23 +6,24 @@ import { ZenPalette } from '@_palette'
 
 type Props = {
   label?: any
-  route: string
-  as?: string
-  margin?: boolean
+//   route?: string
+//   as?: string
+  withMarginBottom?: boolean
 }
 
 const GoBack = (props: Props) => {
-  const { label, route, as, margin = true } = props
+  const { label, withMarginBottom = true } = props
   const router = useRouter()
 
   const goBack = useCallback(
     () => {
-      if (as) router.push(route, as)
-      else router.push(route)
-    }, [route, as])
+       router.back()
+      // if (as) router.push(route, as)
+      // else router.push(route)
+    }, [])
 
   return (
-      <Grid item {...margin && { style: { marginBottom: '2em' } }}>
+      <Grid item {...withMarginBottom && { style: { marginBottom: '2em' } }}>
          <Button
             style={{ color: ZenPalette.typographyGrey }}
             variant='text'

@@ -7,12 +7,12 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import ZenTableCell from './Cell'
-import { get, uniqueId } from 'lodash'
+import { uniqueId } from 'lodash'
 import { setData, MobileRowCell, TableHeaderData, TableRowData, SetDataOut, getLastStickyIndex } from './helpers'
-import ZenLoadingMask from '@_components/ContentLoader/LoadingMask'
+import ZenLoadingMask from '../ContentLoader/LoadingMask'
 import { Typography, useTheme, useMediaQuery } from '@material-ui/core'
-import { camelize } from '@_utils/helpers'
 import { ZenPalette } from '@_palette'
+import { zenToolboxInstance } from '@_utils/Toolbox'
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -45,7 +45,6 @@ const CustomTable = React.memo((props: TableProps) => {
   const classes = useStyles()
   const [tableId] = useState(uniqueId('table-'))
   const [lastStickyIndex, setLastStickyIndex] = useState(0)
-
 
   const { _headers = [], _data = [], _isUserIndexRow } = useMemo(():SetDataOut => {
     if (!headers.length) {
@@ -111,7 +110,7 @@ const CustomTable = React.memo((props: TableProps) => {
                         {Object.entries(row).map(([key, value], j) => {
                           const found = key === 'actions'
                             ? undefined
-                            : headers.find(({ name, id }) => camelize(id || name) === camelize(key))
+                            : headers.find(({ name, id }) => zenToolboxInstance.camelize(id || name) === zenToolboxInstance.camelize(key))
                           return <ZenTableCell
                             {...found && found.style && { 
                               headerStyles: found.style,

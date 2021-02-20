@@ -8,21 +8,14 @@ import Title from '@_components/Title'
 import ProgressBar from '@_components/ProgressBar'
 import lightTheme from 'lightTheme'
 import darkTheme from 'darkTheme'
-import { useConfigStore } from '@_zustand/configStore'
+import { useConfigStore } from '@_zustand/config'
 import { ConfigInterface, SWRConfig } from 'swr'
 import dynamic from 'next/dynamic'
-import { ConfigStore } from '@_zustand/helpers'
-import { useWithAuthentication, useWithThemeSwitch } from '@_utils/appHooks'
+import { ConfigStore } from '@_zustand/config/helpers'
 import SplashScreen from './SplashScreen'
 import ZenMenu from '@_components/_ZenMenu'
+import { zenHooksInstance } from '@_utils/hooks'
 const NProgress = dynamic(() => import("@_components/NProgress"), { ssr: false })
-
-/**
- * 
- * This is the component that will wrap our application and manage theme
- * switch as well as authentication and page refresh.
- * 
- */
 
 
 const useStyles = makeStyles(theme => ({
@@ -51,10 +44,12 @@ const useStyles = makeStyles(theme => ({
       }
    },
    content: {
+   // width: (props: any) => !props.isLogged ? '100vw' : `calc(100vw - ${props.menuOpen ? 250 : 60}px)`,
       width: '100%',
       overflow: 'hidden auto',
       minHeight: '100vh',
       padding: '1.5em',
+      // marginTop: '4.5em', // per menu material ui
       transition: 'width .2s ease',
       [theme.breakpoints.down('sm')]: {
          position: 'relative',
@@ -71,8 +66,6 @@ const useStyles = makeStyles(theme => ({
    }
 }))
 
-
-// custom alert for the snackbar body
 const Alert = props => {
   const { rootAlert, alertMessage } = useStyles()
   return <MuiAlert
@@ -112,13 +105,15 @@ type Props = {
 
 const ZenApp = (props: Props) => {
    const { children, title, SplashscreenIcon, LSVariables: { AS_PATH, LSTheme, LSToken }, swrConfig } = props
-   const { themeType, menuOpen, isLogged, isLoading, snackbar, closeSnackbar } = useConfigStore(stateSelector)
+   const { themeType, menuOpen, /*isLogged,*/ isLoading, snackbar, closeSnackbar } = useConfigStore(stateSelector)
+   const isLogged = true
    const classes = useStyles({ menuOpen, isLogged })
    const _theme = useTheme()
    const isSmallScreen = useMediaQuery(_theme.breakpoints.down('sm'))
 
-   const { isFirstRun } = useWithAuthentication({ AS_PATH, LSToken })
-   useWithThemeSwitch({ LSTheme })
+   const { isFirstRun } = zenHooksInstance.useInitWithAuthentication({ AS_PATH, LSToken })
+   zenHooksInstance.useWithThemeSwitch({ LSTheme })
+   const isPrivateRoute = zenHooksInstance.useIsPrivateRoute()
 
    const handleClose = useCallback((e, reason) => {
       if (reason === 'clickaway') return
@@ -128,7 +123,7 @@ const ZenApp = (props: Props) => {
    return (
       <>
          <Head>
-            <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=7' />
+            <meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0' />
             <title>{title}</title>
          </Head>
          <ThemeProvider theme={themeType === 'light' ? lightTheme : darkTheme}>
@@ -138,9 +133,9 @@ const ZenApp = (props: Props) => {
                   ? <SplashScreen icon={SplashscreenIcon} />
                   : <div className={classes.wrapper}>
                      {isLoading && !isSmallScreen ? <ProgressBar /> : <NProgress />}
-                     {isLogged && <ZenMenu />}
+                     {isLogged && isPrivateRoute && <ZenMenu />}
                      <div {...isLogged && { className: classes.content }}>
-                     {isLogged && <Title />}
+                     {isLogged && isPrivateRoute && <Title />}
                      {swrConfig
                         ? <SWRConfig value={swrConfig} >
                            {children}

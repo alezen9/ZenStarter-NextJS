@@ -8,7 +8,9 @@
       "@_swr/*": ["src/swr/*"],
       "@_utils/*": ["src/utils/*"],
       "@_zustand/*": ["src/zustand/*"],
-      "@_entities/*": ["src/myentities/*"],
+      // start modules
+      "@_SDK_Auth/*": ["src/SDK/Modules/Auth/*"],
+      // end modules
       "@_icons": ["src/assets/CustomIcon"],
       "@_palette": ["palette"]
     },

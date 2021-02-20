@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { makeStyles, IconButton } from '@material-ui/core'
 import ItemList from './ItemList'
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded'
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded'
 import ThemeSwitch from '@_components/ThemeModeSwitch'
-import { useConfigStore } from '@_zustand/configStore'
-import { RouteItem } from '..'
-import { ConfigStore } from '@_zustand/helpers'
+import { useConfigStore } from '@_zustand/config'
+import { logoutFn, RouteItem } from '..'
+import { ConfigStore } from '@_zustand/config/helpers'
+import { ZenPalette } from '@_palette'
 
 const useStyles = makeStyles(theme => ({
   relativeWrapper: {
@@ -19,9 +20,7 @@ const useStyles = makeStyles(theme => ({
     position: 'fixed',
     display: 'flex',
     zIndex: 10,
-    backgroundColor: theme.type === 'light'
-      ? '#fafafa'
-      : '#111',
+    backgroundColor: ZenPalette.backgroundColorStandOut,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -56,7 +55,7 @@ const useStyles = makeStyles(theme => ({
     transform: (props: any) => props.menuOpen
       ? 'translate(0)'
       : 'translate(.7em, 3em)',
-    transition: 'transform .1s ease',
+    transition: 'transform .1s ease-out',
     '@media(max-height: 450px)': {
       visibility: (props: any) => props.menuOpen ? 'visible' : 'hidden',
       pointerEvents: (props: any) => props.menuOpen ? 'all' : 'none'
@@ -71,27 +70,32 @@ const stateSelector = (state: ConfigStore) => ({
 
 type Props = {
    items: RouteItem[]
+   logout: logoutFn
 }
 
 const DesktopMenu = (props: Props) => {
-   const { items } = props
+   const { items, logout } = props
    const { menuOpen, toggleMenu } = useConfigStore(stateSelector)
    const classes = useStyles({ menuOpen })
+
+   const _logout = useCallback((e: any) => {
+      logout(menuOpen, toggleMenu)(e)
+   }, [logout, menuOpen, toggleMenu])
 
    return (
       <div className={classes.relativeWrapper}>
          <div className={classes.fixed}>
-         <IconButton
-            className={classes.toggleMenu}
-            onClick={toggleMenu}>
-            {menuOpen
-               ? <CloseRoundedIcon />
-               : <MenuRoundedIcon />}
-         </IconButton>
-         <div className={classes.themeToggleClass}>
-            <ThemeSwitch />
-         </div>
-         <ItemList items={items} />
+            <IconButton
+               className={classes.toggleMenu}
+               onClick={toggleMenu}>
+               {menuOpen
+                  ? <CloseRoundedIcon />
+                  : <MenuRoundedIcon />}
+            </IconButton>
+            <div className={classes.themeToggleClass}>
+               <ThemeSwitch />
+            </div>
+            <ItemList items={items} logout={_logout} />
          </div>
       </div>
    )

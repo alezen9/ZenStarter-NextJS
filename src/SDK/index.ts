@@ -1,122 +1,75 @@
 import { LSToken } from '@_utils/LSVariables'
-import axios, { AxiosInstance, Method } from 'axios'
-import { get } from 'lodash'
+import { AxiosInstance } from 'axios'
+// start modules
+import AuthServer from './Modules/Auth'
+// import UserServer from './Modules/User'
+// end modules
 import getConfig from 'next/config'
+import { zenAxiosInstance } from './helpers/ZenAxios'
 const { publicRuntimeConfig } = getConfig()
 
-type LogRequestType = {
-  url: string
-  method: Method
-  response: any
-  headers: any
-  status: number,
-  body?: any
-  params?: any
-  isError?: boolean
-}
+export class ZenServer {
+	_LSToken: string
+	_self: AxiosInstance
+	authHeader: string | undefined
+	/** start modules */
+	auth: AuthServer
+	// user: UserServer
+	/** end modules */
 
-const LogRequest = (data: LogRequestType): void => {
-  const { url, method, status, response, headers, body = {}, params = {}, isError = false } = data
-  if(publicRuntimeConfig.ENV === 'test'){
-    if(isError) {
-      // console.error(`%c[${method}]: ${url}`, 'font-weight: bold')
-      // console.error('Status: \n', status)
-      console.error('Headers: \n', headers)
-      method === 'post' && console.error('Body: \n', body)
-      method === 'get' && console.error('Params: \n', params)
-      console.error('Response: \n', response)
-    } else {
-      console.group(`%c[${method}]: ${url}`, 'color: rgb(42, 156, 71);')
-      method === 'post' && console.log('Body: \n', body)
-      method === 'get' && console.log('Params: \n', params)
-      console.log(`Response: \n`, response)
-      console.groupEnd()
-    }
-  }
-}
+	constructor() {
+		this._LSToken = LSToken
+		this.authHeader = process.browser ? window.localStorage.getItem(this._LSToken) : undefined
+		// axios
+		this._self = zenAxiosInstance.create(this)
+		// modules
+		this.auth = new AuthServer(this)
+		// this.user = new UserServer(this) <= proceed like this
+	}
 
-class ZenServer {
-  localStorageToken: string
-  _self: AxiosInstance
-  authHeader: string|undefined
-  constructor () {
-    this.localStorageToken = LSToken
-    this.authHeader = process.browser ? window.localStorage.getItem(this.localStorageToken) : undefined
-    this._self = axios.create({
-      baseURL: `${publicRuntimeConfig.API_URL}`,
-      timeout: 100000,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        ...this.authHeader && { Authorization: `Bearer ${this.authHeader}` }
-      }
-    })
-    this._self.interceptors.response.use(
-      res => {
-        const { data, params, headers, url, method } = res.config
-        const response = get(res, 'data.data', res.data)
-        LogRequest({
-          url,
-          method,
-          status: get(res, 'status', 200),
-          headers,
-          body: data ? JSON.parse(data) : {},
-          params,
-          response
-        })
-        return response
-      },
-      error => {
-        const { data, params, headers, url, method } = get(error, 'response.config', {})
-        const err = get(error, 'response.data', error)
-         LogRequest({
-          url,
-          method,
-          status: get(error, 'response.status', 400),
-          headers,
-          body: data ? JSON.parse(data) : {},
-          params,
-          response: err,
-          isError: true
-        })
-        throw err
-      }
-    )
-    this._self.interceptors.request.use(config => {
-      if (process.browser && !config.headers.common['Authorization'] && process.browser && window.localStorage.getItem(this.localStorageToken)) {
-        const _token = window.localStorage.getItem(this.localStorageToken)
-        const authorization = `Bearer ${_token}`
-        config.headers.common['Authorization'] = authorization
-        this._self.defaults.headers.common['Authorization'] = `Bearer ${_token}`
-      }
-      return config
-    },
-    err => Promise.reject(err))
-  }
+	// this is an example for GQL server where there is a single endpoint
+	// for rest apis its better to have the api call directly in the modules
+	async API({ query, name, params, fields }: { query: string; name: string; params?: any; fields?: string }) {
+		return this._self.post('/graphql', { query }).then((res: any) => {
+			const { data, errors } = res
+			if (errors && errors.length) {
+				this.LogRequest({
+					name,
+					params,
+					fields,
+					response: errors,
+					isError: true
+				})
+				throw errors[0].message
+			} else {
+				this.LogRequest({
+					name,
+					params,
+					fields,
+					response: data[name]
+				})
+				return data[name]
+			}
+		})
+	}
 
-  setToken (token: string) {
-    const tokenSet = get(this._self, 'defaults.headers.common.Authorization', undefined)
-    let _token = tokenSet ? tokenSet.split(' ')[1] : undefined
-    if (token !== _token) {
-      this._self.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    }
-    window.localStorage.setItem(this.localStorageToken, token)
-  }
-
-  hasToken (): boolean {
-    return !!(get(this._self, 'defaults.headers.common.Authorization', undefined) || (process.browser && window.localStorage.getItem(this.localStorageToken)))
-  }
-
-   user_login (body: { username: string, password: string }): Promise<{ token: string }> { 
-     return Promise.resolve({ token: 'randomtoken' })
-    // e.g. return this._self.post(`/signin`, body)
-  }
-
-  user_logout (_logout?: VoidFunction): void {
-    window.localStorage.removeItem(this.localStorageToken)
-    this._self.defaults.headers.common['Authorization'] = undefined
-    if (_logout) _logout()
-  }
+	// customize this function as needed
+	private LogRequest = ({ name, response, params, fields, isError = false }) => {
+		if (publicRuntimeConfig.ENV === 'test') {
+			if (isError) {
+				console.error('API: ', name)
+				console.error('Params: \n', params)
+				console.error('RequestedFields: \n', fields)
+				console.error('Response: \n', response)
+			} else {
+				console.group(`%cAPI: ${name}`, 'color: rgb(42, 156, 71);')
+				params && console.log(`Params: \n`, params)
+				fields && console.log(`RequestedFields: \n`, fields)
+				console.log(`Response: \n`, response)
+				console.groupEnd()
+			}
+		}
+	}
 }
 
 export const apiInstance = new ZenServer()

@@ -1,8 +1,8 @@
 import React from 'react'
 import { makeStyles, Switch, Theme } from '@material-ui/core'
-import { useConfigStore } from '@_zustand/configStore'
+import { useConfigStore } from '@_zustand/config'
 import Brightness2RoundedIcon from '@material-ui/icons/Brightness2Rounded'
-import { ConfigStore } from '@_zustand/helpers'
+import { ConfigStore } from '@_zustand/config/helpers'
 
 const useStyles = makeStyles((theme: Theme) => ({
   moon: {

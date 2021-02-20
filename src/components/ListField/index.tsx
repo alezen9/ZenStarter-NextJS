@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { makeStyles, IconButton, Typography, Popover } from '@material-ui/core'
-import { ZenPalette } from '@_palette'
+import { ZenPalette } from '../../../palette'
 import DetailsRoundedIcon from '@material-ui/icons/DetailsRounded'
 import { uniqueId } from 'lodash'
 

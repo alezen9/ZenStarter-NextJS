@@ -232,6 +232,19 @@ const lightTheme = createMuiTheme({
         height: 'none'
       }
     },
+    MuiListItem: {
+      root: {
+        '&:hover': {
+          backgroundColor: 'rgba(0,0,0, .03) !important'
+        }
+      }
+    },
+    MuiListItemIcon: {
+      root: {
+        color: 'unset',
+        transition: 'color .3s ease'
+      }
+    },
     MuiTableHead: {
       root: {
         backgroundColor: 'rgba(0,0,0,.1)'
@@ -254,6 +267,20 @@ const lightTheme = createMuiTheme({
       body: {
         fontSize: '.9em',
         borderBottom: 'none'
+      }
+    },
+    MuiTab: {
+      textColorInherit: {
+        '&$disabled': {
+          opacity: 0.3,
+          background: `repeating-linear-gradient(
+            -55deg,
+            #DFDFE5,
+            #DFDFE5 10px,
+            #EFEFF2 10px,
+            #EFEFF2 20px
+          )`
+        }
       }
     },
     MuiMenuItem: {

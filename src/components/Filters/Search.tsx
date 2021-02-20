@@ -3,8 +3,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded'
 import { Grid, InputAdornment } from '@material-ui/core'
 import FormikInput, { FormikEssentials } from '@_components/FormikInput'
-import { usePrevious } from '@_utils/customHooks'
 import { get } from 'lodash'
+import { zenHooksInstance } from '@_utils/hooks'
 
 const SearchAdornment = () => <InputAdornment position='end' >
   <SearchRoundedIcon />
@@ -33,7 +33,7 @@ type SearchBoxProps = {
 export const SearchBox = React.memo((props: SearchBoxProps) => {
   const { formik, onSearchChange, onSearchSubmit, excludeSearchBoxFromFilters = false } = props
   const [val, setVal] = useState('')
-  const formikPrevVal = usePrevious(get(formik, 'values.searchText', null))
+  const formikPrevVal = zenHooksInstance.usePrevious(get(formik, 'values.searchText', null))
 
   const handleChange = useCallback(v => {
       if(onSearchChange) onSearchChange(v)

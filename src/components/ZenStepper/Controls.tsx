@@ -3,8 +3,8 @@ import { Button, Grid, IconButton, makeStyles, MobileStepper, useMediaQuery } fr
 import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded'
 import ArrowForwardIosRoundedIcon from '@material-ui/icons/ArrowForwardIosRounded'
 import DoneAllRoundedIcon from '@material-ui/icons/DoneAllRounded'
-import { useConfigStore } from '@_zustand/configStore'
-import { ConfigStore } from '@_zustand/helpers'
+import { useConfigStore } from '@_zustand/config'
+import { ConfigStore } from '@_zustand/config/helpers'
 import { ZenPalette } from '@_palette'
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
    nSteps: number
    disableNext?: boolean
    disablePrev?: boolean
-   resetButton?: ReactElement
+   FinalActions?: ReactElement
 }
 
 const useStyles = makeStyles(theme => ({
@@ -58,15 +58,15 @@ const useStyles = makeStyles(theme => ({
 const selectorConfigStore = (state: ConfigStore) => state.menuOpen
 
 const Controls = (props: Props) => {
-   const { handleBack, handleNext, handleReset, nSteps, activeStep, disableNext, disablePrev, resetButton } = props
+   const { handleBack, handleNext, handleReset, nSteps, activeStep, disableNext, disablePrev, FinalActions } = props
    const isMenuOpen = useConfigStore(selectorConfigStore)
    const classes = useStyles({ isMenuOpen })
    const isSmallScreen = useMediaQuery('(max-width: 850px)')
    return <Grid item xs={12} className={classes.gridContainer}>
       {activeStep === nSteps
       ?  <div className={classes.endBtnContainer}>
-         {resetButton
-            ?  React.cloneElement(resetButton, { onClick: handleReset })
+         {FinalActions
+            ?  React.cloneElement(FinalActions, { reset: handleReset })
             :  <Button startIcon={<DoneAllRoundedIcon />} color='primary' variant='outlined' size='small' onClick={handleReset}>
                   Fine
                </Button>}
@@ -84,7 +84,7 @@ const Controls = (props: Props) => {
                </IconButton>
             :  <Button color='primary' variant='outlined' disabled={activeStep === 0 || disablePrev} onClick={handleBack}>
                   <ArrowBackIosRoundedIcon style={{ marginRight: '.5em', fontSize: '.85em' }} />
-                  Indietro
+                  Back
                </Button>
          }
          nextButton={
@@ -93,7 +93,7 @@ const Controls = (props: Props) => {
                      <ArrowForwardIosRoundedIcon />
                   </IconButton>
                :   <Button disabled={disableNext} color='primary' variant='outlined' onClick={handleNext}>
-                     Avanti
+                     Next
                      <ArrowForwardIosRoundedIcon style={{ marginLeft: '.5em', fontSize: '.85em' }} />
                   </Button>
          }

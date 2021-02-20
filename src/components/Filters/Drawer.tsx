@@ -5,6 +5,7 @@ import { FormikEssentials } from '@_components/FormikInput'
 import { ZenPalette } from '@_palette'
 import Inputs, { Filter } from './Inputs'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import BackspaceRoundedIcon from '@material-ui/icons/BackspaceRounded'
 
 const borderRadius = 10
@@ -102,6 +103,12 @@ const FiltersDrawer = (props: Props) => {
                     <Inputs filters={filters} formik={formik}  />
                 </Grid>
                 <Grid item xs={12} container justify='space-around' alignItems='center' className={classes.actions}>
+                   {/* <Grid item>
+                        <IconButton color='primary'>
+                           <CloudDownloadIcon />
+                        </IconButton>
+                    </Grid>
+                    {isMobile && <Divider style={{ margin: 'auto .5em', height: '55%' }} orientation="vertical" flexItem />} */}
                    <Grid item>
                       {false
                       ? <IconButton color='primary'>

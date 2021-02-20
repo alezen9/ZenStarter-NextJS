@@ -134,7 +134,7 @@ const InputAutocomplete = (props: Props) => {
         getOptionLabel={option => option.label || ''}
         renderOption={option => get(option, 'component', option.label || '')}
         {...large && { ListboxComponent }}
-        renderInput={params => <TextField {...params} placeholder='Cerca . . .' label={label} variant='outlined' />}
+        renderInput={params => <TextField {...params} placeholder='Search . . .' label={label} variant='outlined' />}
       />
       {get(errors, name, false) && <FormHelperText margin='dense' style={{ color: 'red', margin: '12px 14px 0 14px' }} id={`${id}_error`}>{get(errors, name, '')}</FormHelperText>}
     </>

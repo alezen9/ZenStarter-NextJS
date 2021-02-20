@@ -1,5 +1,5 @@
 import produce from "immer"
-import { useCallback, useMemo, useState } from "react"
+import { MutableRefObject, useCallback, useMemo, useRef, useState } from "react"
 
 type Config<T> = {
    steps: T[]
@@ -26,6 +26,7 @@ const getInitVals = (steps: any) => {
 
 export type StepperFlowConfig = {
    updateStatus: (prevStep: number, nextStep: number) => void
+   setActiveStepRef: MutableRefObject<(step: number) => void>
 }
 
 /**
@@ -35,6 +36,7 @@ export type StepperFlowConfig = {
 export const useStepperFlow = <T extends string>(config: Config<T>) => {
    const { steps } = config
    const [status, setStatus] = useState<Record<T, SingleStepStatus>>(() => getInitVals(steps))
+   const setActiveStepRef = useRef<(step: number) => void>(null)
 
    const resetStatus = useCallback(() => {
       const initStatus = getInitVals(steps)
@@ -59,13 +61,24 @@ export const useStepperFlow = <T extends string>(config: Config<T>) => {
       )
    }, [steps.length])
 
+   const backOneFromFinal = useCallback(() => {
+      if(setActiveStepRef.current) {
+         setStatus(produce(draft => {
+            draft[steps[steps.length - 1]].active = true
+         }))
+         setActiveStepRef.current(steps.length - 1)
+      }
+   }, [])
+
    const flowConfig: StepperFlowConfig = useMemo(() => ({
-      updateStatus
+      updateStatus,
+      setActiveStepRef
    }), [updateStatus])
 
    return {
       status,
       flowConfig,
+      backOneFromFinal,
       resetStatus
    }
 }

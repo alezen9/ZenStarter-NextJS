@@ -1,6 +1,6 @@
-import { ConfigStore } from "@_zustand/helpers"
 import { Draft } from "immer"
 import { isObject } from "lodash"
+import { ConfigStore } from "@_zustand/config/helpers"
 
 export enum SwrKey {
   MY_KEYS = 'MY_KEYS',
@@ -9,7 +9,8 @@ export enum SwrKey {
 
 
 export const stateSelector = (state: ConfigStore) => ({
-  setIsLoading: state.setIsLoading
+  setIsLoading: state.setIsLoading,
+  openSnackbar: state.openSnackbar
 })
 
 const iterateAndAssign = (data, draft, prefix?: string) => {

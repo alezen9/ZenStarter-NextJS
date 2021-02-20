@@ -25,13 +25,13 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-type Data = {
+export type RadarChartData = {
   prop: string
   value: number
 }
 
 type Props = {
-  data: Data[]
+  data: RadarChartData[]
 }
 
 const RadarChart = ({ data = [] }: Props) => {
