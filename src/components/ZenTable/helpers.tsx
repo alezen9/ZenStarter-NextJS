@@ -54,10 +54,16 @@ interface TableData {
   data: TableRowData[]
 }
 
+export interface ZenTableSort {
+   colIDS: string[]
+   initialValue: { colID: string, isASC: boolean }
+   disableAll: boolean
+   onSortChange: (id: string, isASC: boolean) => void
+}
+
 interface SetDataIn extends TableData {
   withActions: boolean
 }
-
 
 
 export interface SetDataOut {

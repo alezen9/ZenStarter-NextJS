@@ -1,6 +1,16 @@
-import React, { ReactElement, useMemo } from 'react'
-import { makeStyles, TableCell, useMediaQuery, useTheme } from '@material-ui/core'
+import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react'
+import { IconButton, makeStyles, TableCell, useMediaQuery, useTheme } from '@material-ui/core'
 import { ZenPalette } from '@_palette'
+import { get } from 'lodash'
+import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded'
+
+type CellSort = {
+   show: boolean
+   disabled: boolean
+   isActive: boolean
+   initialIsASC: boolean
+   handleSortToggle: (isASC: boolean) => void
+}
 
 type Props = {
   name?: string
@@ -12,6 +22,7 @@ type Props = {
   isHeader?: boolean
   colSpan?: number
   isLastStickyColumn?: boolean
+  sort?: CellSort
   [x: string]: any
 }
 
@@ -48,15 +59,28 @@ const useStyles = makeStyles(theme => ({
     background: props.isHeader
       ? ZenPalette.tableHeaderCellBackground
       : ZenPalette.tableCellBackground
+  }),
+  sortButton: (props: any) => ({
+      marginRight: '.5em',
+      transform: props.isASC
+         ? 'rotateZ(0)'
+         : 'rotateZ(180deg)',
+      transition: 'transform .2s ease-in-out',
+      ...!props.sortActive && {
+         color: ZenPalette.typographyGrey,
+         opacity: .6
+      }
   })
 }))
 
 
 const ZenTableCell = (props: Props) => {
-  const { name = '', align = 'left', style = {}, headerStyles = {}, component, sticky = false, isHeader = false, colSpan, isLastStickyColumn = true } = props
-  const classes = useStyles({ sticky, isHeader, isLastStickyColumn })
+  const { name = '', align = 'left', style = {}, headerStyles = {}, component, sticky = false, isHeader = false, colSpan, isLastStickyColumn = true, sort } = props
+  const [isASC, setIsASC] = useState(get(sort, 'initialIsASC', true))
+  const classes = useStyles({ sticky, isHeader, isLastStickyColumn, isASC, sortActive: get(sort, 'isActive', false) })
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'))
+
   const inlineStyles = useMemo(() => {
     // @ts-ignore
     const { width, minWidth, ...rest } = { ...headerStyles, ...style }
@@ -65,15 +89,28 @@ const ZenTableCell = (props: Props) => {
       : { ...headerStyles, ...style }
   }, [isSmallScreen, JSON.stringify({ ...headerStyles, ...style })])
 
+  const onSortToggle = useCallback(() => {
+     const { handleSortToggle = () => {} } = sort || {}
+     setIsASC(state => {
+        handleSortToggle(!state)
+        return !state
+     })
+  }, [get(sort, 'handleSortToggle', null)])
+
   return (
     <>
-    <TableCell
-      {...colSpan && { colSpan }}
-      className={classes.stickyCell}
-      align={align}
-      style={inlineStyles}>
-      {component || name}
-    </TableCell>
+      <TableCell
+         {...colSpan && { colSpan }}
+         className={classes.stickyCell}
+         align={align}
+         style={inlineStyles}>
+            {isHeader && get(sort, 'show', false) && (
+               <IconButton onClick={onSortToggle} size='small' disabled={get(sort, 'disabled', false)} className={classes.sortButton}>
+                  <ExpandMoreRoundedIcon />
+               </IconButton>
+            )}
+            {component || name}
+      </TableCell>
     </>
   )
 }

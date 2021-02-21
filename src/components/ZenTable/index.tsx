@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, ReactNode } from 'react'
+import React, { useState, useMemo, useEffect, ReactNode, useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -7,8 +7,8 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import ZenTableCell from './Cell'
-import { uniqueId } from 'lodash'
-import { setData, MobileRowCell, TableHeaderData, TableRowData, SetDataOut, getLastStickyIndex } from './helpers'
+import { get, uniqueId } from 'lodash'
+import { setData, MobileRowCell, TableHeaderData, TableRowData, SetDataOut, getLastStickyIndex, ZenTableSort } from './helpers'
 import ZenLoadingMask from '../ContentLoader/LoadingMask'
 import { Typography, useTheme, useMediaQuery } from '@material-ui/core'
 import { ZenPalette } from '@_palette'
@@ -36,15 +36,23 @@ type TableProps = {
   withActions?: boolean,
   pagination?: ReactNode,
   forceMobile?: boolean
+  sort?: ZenTableSort
 }
 
 const CustomTable = React.memo((props: TableProps) => {
-  const { headers = [], data = [], withActions = false, pagination, forceMobile = false } = props
+  const { headers = [], data = [], withActions = false, pagination, forceMobile = false, sort } = props
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'))
   const classes = useStyles()
   const [tableId] = useState(uniqueId('table-'))
   const [lastStickyIndex, setLastStickyIndex] = useState(0)
+  const [activeSort, setActiveSort] = useState(get(sort, 'initialValue.colID', null))
+
+  const handleSortToggle = useCallback((id: string) => (isASC: boolean) => {
+      const { onSortChange = () => {} } = sort || {}
+      setActiveSort(id)
+      onSortChange(id, isASC)
+  }, [get(sort, 'onSortChange', null)])
 
   const { _headers = [], _data = [], _isUserIndexRow } = useMemo(():SetDataOut => {
     if (!headers.length) {
@@ -90,6 +98,15 @@ const CustomTable = React.memo((props: TableProps) => {
                         isLastStickyColumn={lastStickyIndex === i}
                         key={`${tableId}-headerCell-${i}`}
                         align={i !== 0 ? 'right' : 'left'}
+                        sort={{
+                           show: get(sort, 'colIDS', []).includes(cell.id),
+                           disabled: get(sort, 'disableAll', false),
+                           isActive: cell.id === activeSort,
+                           initialIsASC: get(sort, 'initialValue.colID', null) === cell.id
+                              ? get(sort, 'initialValue.isASC', null)
+                              : true,
+                           handleSortToggle: handleSortToggle(cell.id)
+                        }}
                         {...cell} />
                     ))}
                 </TableRow>
