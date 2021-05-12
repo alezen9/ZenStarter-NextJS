@@ -4,7 +4,7 @@ import { useConfigStore } from '@_zustand/config'
 import { Button } from '@material-ui/core'
 import { useRouter } from 'next/router'
 import NavigateBeforeRoundedIcon from '@material-ui/icons/NavigateBeforeRounded'
-import { ZenPalette } from '@_palette'
+import { ZenPalette } from '@_MUITheme'
 import { routesPaths } from '@_utils/routes'
 
 const Title = () => {
@@ -24,7 +24,7 @@ const Title = () => {
   }, [JSON.stringify(activeRoute), JSON.stringify(prevRoute)])
 
   return (
-    <Typography component='h2' variant='h6' color='primary' gutterBottom>
+    <Typography component='h2' variant='h4' color='primary' gutterBottom>
       {activeRoute.displayBack && <Button
         style={{ color: ZenPalette.typographyGrey, minWidth: 30, marginRight: '.5em' }}
         variant='text'

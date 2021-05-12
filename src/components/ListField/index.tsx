@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { makeStyles, IconButton, Typography, Popover } from '@material-ui/core'
-import { ZenPalette } from '../../../palette'
+import { ZenPalette } from '@_MUITheme'
 import DetailsRoundedIcon from '@material-ui/icons/DetailsRounded'
 import { uniqueId } from 'lodash'
 
 const useStyles = makeStyles(theme => ({
   popoverClass: {
-    padding: 8,
+    padding: theme.spacing(2, 4),
     minWidth: 130,
     color: ZenPalette.typographyGrey
   },
@@ -39,6 +39,7 @@ const useStyles = makeStyles(theme => ({
     listStyleType: 'none',
     '& li': {
       fontSize: '.9em',
+      fontWeight: 100,
       lineHeight: '2.2em'
     },
     '& li:not(:first-of-type)': {
@@ -72,8 +73,10 @@ const ListField = (props: Props) => {
 
   return data.length === 0
     ? <IconButton
+      disabled
+      disableRipple
       style={{ width: 48, height: 48 }}>
-      <Typography variant='h6'>
+      <Typography style={{ fontWeight: 300 }} variant='h6'>
         {data.length}
       </Typography>
     </IconButton>
@@ -82,7 +85,7 @@ const ListField = (props: Props) => {
         className={classes.showCondominiButton}
         style={{ width: 48, height: 48 }}
         onClick={e => setAnchorEl(e.currentTarget)}>
-        <Typography variant='h6'>
+        <Typography style={{ fontWeight: 300 }} variant='h6'>
           {data.length}
         </Typography>
         <DetailsRoundedIcon />

@@ -1,14 +1,14 @@
-import { ZenPalette, ThemeType } from '@_palette'
+import { ZenPalette, ThemeType, INITIAL_THEME_TYPE } from '@_MUITheme'
 import create, { UseStore } from 'zustand'
 import { ConfigStore, PrevRoute } from './helpers'
 import { LSTheme } from '@_utils/LSVariables'
 import { routesPaths } from '@_utils/routes'
-import { setSnackbarData, _immer } from '../helpers'
+import { setSnackbarData, _immer } from '@_zustand/helpers'
 import { ZenRouteID, ZenRoute } from '@_utils/routes/types'
 
 export const useConfigStore: UseStore<ConfigStore> = create(
 	_immer((set: any, get: any, api: any) => ({
-		themeType: ThemeType.light,
+		themeType: INITIAL_THEME_TYPE,
 		isLogged: false,
 		menuOpen: false,
 		isLoading: false,

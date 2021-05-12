@@ -1,11 +1,17 @@
 const withPWA = require('next-pwa')
 
+const RESET_COLOR = '\x1b[0m'
+const GREEN_TEXT = '\x1b[32m'
+
+const enablePWA = process.env.NEXT_PUBLIC_ENABLE_PWA === 'true'
+
 const getApiUrl = (config = '') => {
-  console.log(`${config} config env: `, process.env.ENV)
-  console.log(`Listening on port ${process.env.PORT || 3000}`)
-  // set here below the API url for every environment
+  console.log(`${GREEN_TEXT}[ZNS] ${config} config env: ${process.env.ENV}${RESET_COLOR}`)
+  console.log(`${GREEN_TEXT}[ZNS] Listening on port ${process.env.PORT || 3000}${RESET_COLOR}`)
   switch (process.env.ENV || 'test') {
     case 'test':
+      return 'http://localhost:7000'
+    case 'staging':
       return 'http://localhost:7000'
     case 'production':
       return 'http://localhost:7000'
@@ -15,6 +21,9 @@ const getApiUrl = (config = '') => {
 }
 
 module.exports = withPWA({
+  future: {
+    webpack5: true
+  },
   serverRuntimeConfig: {
     API_URL: getApiUrl('server')
   },
@@ -27,10 +36,12 @@ module.exports = withPWA({
     autoPrerender: false
   },
   pwa: {
-    disable: process.env.ENV !== 'production',
-    register: process.env.ENV !== 'production',
+    disable: !enablePWA,
+    register: enablePWA,
+    scope: '/',
     dest: 'public',
     maximumFileSizeToCacheInBytes: 10000000, // 10MB
-    sourcemap: process.env.ENV === 'test'
+    sourcemap: false,
+    dynamicStartUrlRedirect: '/auth/login'
   }
 })

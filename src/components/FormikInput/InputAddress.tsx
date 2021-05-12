@@ -4,15 +4,13 @@ import PlacesAutocomplete, {
   geocodeByPlaceId,
   getLatLng
 } from 'react-places-autocomplete'
-import { TextField, Grid, makeStyles, IconButton, Popover, Typography, Divider, FormHelperText, Collapse } from '@material-ui/core'
+import { TextField, Grid, makeStyles, IconButton, Popover, Typography, Divider, FormHelperText } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import { get, isEqual, uniqueId, isEmpty } from 'lodash'
+import { get, isEqual, uniqueId, isEmpty, cloneDeep } from 'lodash'
 import FormikInput from '.'
 import RoomRoundedIcon from '@material-ui/icons/RoomRounded'
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded'
-import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded'
-import ExpandLessRoundedIcon from '@material-ui/icons/ExpandLessRounded'
-import { ZenPalette } from '@_palette'
+import { ZenPalette } from '@_MUITheme'
 
 /**
  * ADDRESS
@@ -184,19 +182,19 @@ const InfoPopover = React.memo((props: InfoPopoverProps) => {
     }}
   >
     <Typography variant='body2' style={{ fontSize: '.8em' }}>
-        Per una migliore ricerca separare i dati con una virgola.
+      Per una migliore ricerca separare i dati con una virgola.
     </Typography>
     <Divider light style={{ margin: '.5em 0' }} />
     <Typography variant='caption' style={{ fontSize: '.7em' }}>
-        Esempio:
+      Esempio:
     </Typography>
     <br />
     <Typography variant='caption' style={{ fontSize: '.7em' }}>
-        Via..., civico, comune, provincia, CAP
+      Via..., civico, comune, provincia, CAP
     </Typography>
     <br />
     <Typography variant='caption' style={{ fontSize: '.7em', fontWeight: 'bold', letterSpacing: '.07em' }}>
-        Via..., 11, Roma, RM, 00123
+      Via..., 11, Roma, RM, 00123
     </Typography>
   </Popover>
 })
@@ -209,7 +207,7 @@ type Props = {
   onChange: any
   errors: any
   setFieldError: any
-  showExpandButton?: boolean
+  formik: any
   inputGridProps?: {
     [field: string]: any
   }
@@ -217,30 +215,28 @@ type Props = {
 
 const InputAddressAutoComplete = (props: Props) => {
   const {
-  name,
-  label = '',
-  placeholder = '',
-  values,
-  inputGridProps = {
-    fullAddress: { sm: 12 },
-    CAP: { sm: 3 },
-    via: { sm: 4 },
-    civico: { sm: 2 },
-    comune: { sm: 3 }
-  },
-  onChange,
-  errors,
-  setFieldError,
-  showExpandButton = false
-} = props
+    name,
+    label = '',
+    placeholder = '',
+    values,
+    inputGridProps = {
+      fullAddress: { sm: 12 },
+      CAP: { sm: 3 },
+      via: { sm: 4 },
+      civico: { sm: 2 },
+      comune: { sm: 3 }
+    },
+    onChange,
+    formik,
+    errors,
+    setFieldError
+  } = props
   const classes = useStylesAutocomplete({ error: !isEmpty(get(errors, name, false)) })
   const generalClasses = useStyles()
   const [addressValue, setAddressValue] = useState('')
-  const [localFormik, setLocalFormik] = useState({})
   const [anchorEl, setAnchorEl] = useState(null)
   const [initValueSet, setInitValueSet] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const [showAllFields, setShowAllFields] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
@@ -261,13 +257,10 @@ const InputAddressAutoComplete = (props: Props) => {
             const splittedValues = await splitAddress(res)
             if (isMounted) {
               setAddressValue(splittedValues.indirizzoCompleto || '')
-              setLocalFormik(splittedValues)
               onChange(splittedValues)
               setInitValueSet(true)
             }
-            if (res.partial_match) throw new Error('Indirizzo non conforme')
           } catch (error) {
-            setFieldError(`${name}.indirizzoCompleto`, error.message || 'Errore durante parsing')
             console.warn(error)
           }
         }
@@ -282,12 +275,10 @@ const InputAddressAutoComplete = (props: Props) => {
         const results = await geocodeByPlaceId(d.value)
         const res = get(results, '0', null)
         if (!res) throw new Error('no_results')
-        const splittedValues = await splitAddress(res)
+        const splittedValues = await splitAddress(res, false)
         setAddressValue(splittedValues.indirizzoCompleto)
-        setLocalFormik(splittedValues)
         onChange(splittedValues)
       } else {
-        setLocalFormik({})
         onChange({})
       }
     } catch (error) {
@@ -296,7 +287,7 @@ const InputAddressAutoComplete = (props: Props) => {
   }
 
   const splitAddress = useCallback(
-    async _address => {
+    async (_address, useInitialValues = true) => {
       try {
         const { lat, lng } = await getLatLng(_address)
         const geoPoint = {
@@ -313,6 +304,7 @@ const InputAddressAutoComplete = (props: Props) => {
           return acc
         }, {})
         return {
+          ...useInitialValues && cloneDeep(get(values, name, {})),
           ...formatted,
           indirizzoCompleto: formattedAddress,
           geoPoint
@@ -320,11 +312,9 @@ const InputAddressAutoComplete = (props: Props) => {
       } catch (error) {
         throw error
       }
-    }, [])
+    }, [name, JSON.stringify(values)])
 
   const showInfo = useCallback(e => setAnchorEl(e.currentTarget), [])
-
-  const toggleAllFields = useCallback(e => setShowAllFields(state => !state), [])
 
   return (
     <>
@@ -332,9 +322,6 @@ const InputAddressAutoComplete = (props: Props) => {
         <IconButton className={generalClasses.tooltipInfo} onClick={showInfo}>
           <InfoRoundedIcon />
         </IconButton>
-        {showExpandButton && <IconButton className={generalClasses.tooltipShowAllFields} onClick={toggleAllFields}>
-          {showAllFields ? <ExpandLessRoundedIcon /> : <ExpandMoreRoundedIcon />}
-        </IconButton>}
         <InfoPopover anchorEl={anchorEl} handleClose={() => setAnchorEl(null)} />
         <PlacesAutocomplete
           value={addressValue}
@@ -347,8 +334,8 @@ const InputAddressAutoComplete = (props: Props) => {
                 freeSolo
                 inputValue={addressValue}
                 onChange={handleSelectAutocomplete}
-                onInputChange={(e,d) => {
-                  if(!d && e) onChange({})
+                onInputChange={(e, d) => {
+                  if (!d && e) onChange({})
                 }}
                 options={suggestions.map(({ description, placeId }) => ({ label: description, value: placeId }))}
                 getOptionLabel={option => option.label}
@@ -359,44 +346,43 @@ const InputAddressAutoComplete = (props: Props) => {
             </div>)
           }}
         </PlacesAutocomplete>
-        {!isEmpty(get(errors, name, false)) && <FormHelperText margin='dense' style={{ color: 'red', margin: '12px 14px 0 14px' }} id={`${uniqueId('address-')}_error`}>{get(errors, `${name}.indirizzoCompleto`, null) || get(errors, `${name}.civico`, null)}</FormHelperText>}
+        {/* {!isEmpty(get(errors, name, false)) && <FormHelperText margin='dense' style={{ color: 'red', margin: '12px 14px 0 14px' }} id={`${uniqueId('address-')}_error`}>{get(errors, `${name}.indirizzoCompleto`, null) || get(errors, `${name}.civico`, null)}</FormHelperText>} */}
+        {get(errors, `${name}.indirizzoCompleto`, null) && <FormHelperText margin='dense' style={{ margin: '12px 14px 0 14px' }} id={`${uniqueId('address-')}_error`}>{get(errors, `${name}.indirizzoCompleto`, null)}</FormHelperText>}
       </Grid>
-      <Collapse in={showAllFields} timeout='auto' unmountOnExit style={{ width: '100%' }}>
-        <Grid item container xs={12} spacing={2} style={{ margin: 0 }}>
-          <FormikInput
-            name='CAP'
-            label='CAP'
-            values={localFormik}
-            disabled
-            style={{ marginTop: 0 }}
-            {...get(inputGridProps, 'CAP', {})}
-          />
-          <FormikInput
-            name='via'
-            label='Via'
-            values={localFormik}
-            disabled
-            style={{ marginTop: 0 }}
-            {...get(inputGridProps, 'via', {})}
-          />
-          <FormikInput
-            name='civico'
-            label='Civico'
-            values={localFormik}
-            disabled
-            style={{ marginTop: 0 }}
-            {...get(inputGridProps, 'civico', {})}
-          />
-          <FormikInput
-            name='comune'
-            label='Comune'
-            values={localFormik}
-            disabled
-            style={{ marginTop: 0 }}
-            {...get(inputGridProps, 'comune', {})}
-          />
-        </Grid>
-      </Collapse>
+      <Grid item container xs={12} spacing={2} style={{ padding: 0, margin: '-16px auto' }} >
+        <FormikInput
+          name={`${name}.CAP`}
+          label='CAP'
+          required
+          style={{ marginTop: 0 }}
+          {...formik}
+          {...get(inputGridProps, 'CAP', {})}
+        />
+        <FormikInput
+          name={`${name}.via`}
+          label='Via'
+          required
+          style={{ marginTop: 0 }}
+          {...formik}
+          {...get(inputGridProps, 'via', {})}
+        />
+        <FormikInput
+          name={`${name}.civico`}
+          label='Civico'
+          required
+          style={{ marginTop: 0 }}
+          {...formik}
+          {...get(inputGridProps, 'civico', {})}
+        />
+        <FormikInput
+          name={`${name}.comune`}
+          label='Comune'
+          required
+          style={{ marginTop: 0 }}
+          {...formik}
+          {...get(inputGridProps, 'comune', {})}
+        />
+      </Grid>
     </>
   )
 }

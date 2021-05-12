@@ -10,14 +10,22 @@
       "@_zustand/*": ["src/zustand/*"],
       // start modules
       "@_SDK_Auth/*": ["src/SDK/Modules/Auth/*"],
+      "@_SDK_User/*": ["src/SDK/Modules/User/*"],
+      "@_SDK_Admin/*": ["src/SDK/Modules/Admin/*"],
+      "@_SDK_Supplier/*": ["src/SDK/Modules/Supplier/*"],
+      "@_SDK_RegisteredService/*": ["src/SDK/Modules/RegisteredService/*"],
+      "@_SDK_ExternalService/*": ["src/SDK/Modules/ExternalService/*"],
+      "@_SDK_Import/*": ["src/SDK/Modules/Import/*"],
+      "@_SDK_Export/*": ["src/SDK/Modules/Export/*"],
       // end modules
       "@_icons": ["src/assets/CustomIcon"],
-      "@_palette": ["palette"]
+      "@_MUITheme": ["src/MUITheme/index"]
     },
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "webworker"
     ],
     "sourceMap": true,
     "allowJs": true,

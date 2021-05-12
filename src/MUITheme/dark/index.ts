@@ -1,15 +1,15 @@
 import { createMuiTheme } from '@material-ui/core/styles'
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
-import { ThemeType, configColors } from './palette'
+import { configColors, ThemeType } from '../palette'
 
 const subtitleGrey = '#686868'
 const lightGrey = '#c1c1c1'
 const borderColor = '#b3b3b3'
-const borderRadius = 7
+const borderRadius = 5
 
 const breakpoints = createBreakpoints({})
 
-const darkTheme = createMuiTheme({
+const DarkTheme = createMuiTheme({
   // @ts-ignore
   type: ThemeType.dark,
   palette: {
@@ -77,7 +77,6 @@ const darkTheme = createMuiTheme({
     },
     MuiCard: {
       root: {
-        boxShadow: '0 18px 38px 0 #e1eafc',
         borderRadius
       }
     },
@@ -85,6 +84,9 @@ const darkTheme = createMuiTheme({
       root: {
         borderRadius,
         backgroundColor: '#222'
+      },
+      elevation1: {
+        boxShadow: '0 7px 20px black'
       }
     },
     MuiInputBase: {
@@ -195,6 +197,25 @@ const darkTheme = createMuiTheme({
         backdropFilter: 'blur(12px)'
       }
     },
+    MuiFormControlLabel: {
+      label: {
+        '&$disabled': {
+          color: 'rgba(255,255,255,.2)'
+        }
+      }
+    },
+    MuiFormHelperText: {
+      root: {
+        color: 'red'
+      }
+    },
+    MuiFab: {
+      root: {
+        '&$disabled': {
+          backgroundColor: 'rgba(255,255,255,.2)'
+        }
+      }
+    },
     MuiButtonBase: {
       root: {
         '&$disabled': {
@@ -205,6 +226,7 @@ const darkTheme = createMuiTheme({
     },
     MuiButton: {
       root: {
+        fontWeight: 300,
         minWidth: 120,
         textTransform: 'none',
         boxShadow: 'none !important',
@@ -243,6 +265,13 @@ const darkTheme = createMuiTheme({
       text: {
         '&:hover': {
           backgroundColor: 'rgba(255,255,255,.05)'
+        }
+      }
+    },
+    MuiCheckbox: {
+      colorPrimary: {
+        '&$disabled': {
+          color: 'rgba(255,255,255,.15)'
         }
       }
     },
@@ -358,13 +387,16 @@ const darkTheme = createMuiTheme({
     },
     MuiTableCell: {
       head: {
-        fontWeight: 600,
+        fontWeight: 500,
         color: configColors.typographyColor.dark,
         borderBottom: 'none',
         minWidth: 100
       },
       body: {
+        paddingTop: 12,
+        paddingBottom: 12,
         fontSize: '.9em',
+        fontWeight: 300,
         color: 'rgba(255,255,255,.5)',
         borderBottom: 'none'
       }
@@ -401,4 +433,4 @@ const darkTheme = createMuiTheme({
   }
 })
 
-export default darkTheme
+export default DarkTheme

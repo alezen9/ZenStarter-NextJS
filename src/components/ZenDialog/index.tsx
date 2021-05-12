@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, ReactNode } from 'react'
+import React, { useLayoutEffect, ReactNode, ReactElement } from 'react'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -31,7 +31,7 @@ type Props = {
   actions?: ReactNode
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   fullHeight?: boolean
-  overflowY?: 'hidden'|'scroll'|'auto'
+  overflowY?: 'hidden' | 'scroll' | 'auto'
   fullScreen?: boolean
 }
 

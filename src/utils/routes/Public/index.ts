@@ -14,5 +14,6 @@ export const publicRoutes: ZenRoute[] = [
       isPrivate: false,
       title: 'Login',
       path: '/auth/login'
-   }
+   },
+   // ============================ //
 ]

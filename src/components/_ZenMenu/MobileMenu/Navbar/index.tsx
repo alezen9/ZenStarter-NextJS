@@ -4,9 +4,9 @@ import { Typography, makeStyles, IconButton } from '@material-ui/core'
 import Spinner from '@_components/Loaders/Spinner'
 import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded'
 import ThemeSwitch from '@_components/ThemeModeSwitch'
-import { ZenPalette } from '@_palette'
+import { ZenPalette } from '@_MUITheme'
 import { logoutFn, RouteItem } from '@_components/_ZenMenu'
-import { zenToolboxInstance } from '@_utils/Toolbox'
+import zenToolbox from '@_utils/toolbox'
 
 const useStyles = makeStyles(theme => ({
    themeSwitchColor: {
@@ -40,20 +40,21 @@ const Links = React.memo((props: { toggleMenu: VoidFunction, items: RouteItem[] 
    const { toggleMenu, items } = props
    const { menuItemBorderFix } = useStyles()
    return <>
-   {items.map(({ title, path }, i) => {
-      return <Fragment key={`main-path-${i}`}>
-         <li className={`menu-item ${menuItemBorderFix}`}>
-         <Link href={path} >
-            <div style={{
-               height: 35,
-               fontSize: '1.4em',
-               marginBottom: '.3em',
-               display: 'flex',
-               alignItems: 'flex-end' }} onClick={toggleMenu}> {title} </div>
-         </Link>
-         </li>
-      </Fragment>
-   })}
+      {items.map(({ title, path }, i) => {
+         return <Fragment key={`main-path-${i}`}>
+            <li className={`menu-item ${menuItemBorderFix}`}>
+               <Link href={path} >
+                  <div style={{
+                     height: 35,
+                     fontSize: '1.4em',
+                     marginBottom: '.3em',
+                     display: 'flex',
+                     alignItems: 'flex-end'
+                  }} onClick={toggleMenu}> {title} </div>
+               </Link>
+            </li>
+         </Fragment>
+      })}
    </>
 })
 
@@ -71,7 +72,7 @@ const Navbar = (props: Props) => {
 
    useLayoutEffect(() => {
       const setBodyPosition = async (): Promise<void> => {
-         if (open) await zenToolboxInstance.asyncTimeout(600)
+         if (open) await zenToolbox.asyncTimeout(600)
          document.body.style.overflow = open ? 'hidden' : 'auto'
       }
       setBodyPosition()
@@ -84,29 +85,29 @@ const Navbar = (props: Props) => {
    return (
       <>
          <div className={open ? `header menu-opened ${themeSwitchColor}` : `header ${themeSwitchColor} ${headerBoxShadowFix}`}>
-         <div className='burger-container' onClick={toggleMenu}>
-            <div id='burger'>
-               <div className={`bar topBar ${themeSwitchColorInvert}`} />
-               <div className={`bar btmBar ${themeSwitchColorInvert}`} />
-            </div>
-         </div>
-         <div className={`center ${themeSwitchColor}`}>
-            {isLoading && <Spinner />}
-         </div>
-         <div style={{ height: 'calc(100vh - 64px)', overflowY: 'auto' }}>
-            <ul className={`menu ${themeSwitchColor}`}>
-               <div style={{ width: '100%', textAlign: 'right' }}>
-               <ThemeSwitch />
+            <div className='burger-container' onClick={toggleMenu}>
+               <div id='burger'>
+                  <div className={`bar topBar ${themeSwitchColorInvert}`} />
+                  <div className={`bar btmBar ${themeSwitchColorInvert}`} />
                </div>
-               <Links items={items} toggleMenu={toggleMenu} />
-               <Copyrights />
-            </ul>
-         </div>
-         <div className={`right ${themeSwitchColor}`}>
-            <IconButton onClick={logout(open, toggleMenu)}>
-               <ExitToAppRoundedIcon style={{ color: 'crimson' }} />
-            </IconButton>
-         </div>
+            </div>
+            <div className={`center ${themeSwitchColor}`}>
+               {isLoading && <Spinner />}
+            </div>
+            <div style={{ height: 'calc(100vh - 64px)', overflowY: 'auto' }}>
+               <ul className={`menu ${themeSwitchColor}`}>
+                  <div style={{ width: '100%', textAlign: 'right' }}>
+                     <ThemeSwitch />
+                  </div>
+                  <Links items={items} toggleMenu={toggleMenu} />
+                  <Copyrights />
+               </ul>
+            </div>
+            <div className={`right ${themeSwitchColor}`}>
+               <IconButton onClick={logout(open, toggleMenu)}>
+                  <ExitToAppRoundedIcon style={{ color: 'crimson' }} />
+               </IconButton>
+            </div>
          </div>
       </>
    )
@@ -116,7 +117,7 @@ const Copyrights = React.memo(() => {
    const { themeSwitchColorInvertNoBg } = useStyles()
    return <div style={{ marginTop: '5em', width: '100%', textAlign: 'center' }}>
       <Typography variant='caption' align='center' className={themeSwitchColorInvertNoBg}>
-         {`© Futbob - ${new Date().getFullYear()}`}
+         {`© Zen Next.js starter - ${new Date().getFullYear()}`}
       </Typography>
    </div>
 })

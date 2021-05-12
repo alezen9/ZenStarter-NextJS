@@ -1,17 +1,35 @@
+import React from 'react'
 import { OptionType } from "@_components/FormikInput"
 import cleanDeep from "clean-deep"
-import { compact, isObject, map, isUndefined, keys, has, get, entries, isObjectLike, isEqual } from "lodash"
+import { compact, map, isUndefined, keys, has, get, entries, isObjectLike, isEqual, uniqueId } from "lodash"
+import { DraggableObject } from '@_components/DraggableList'
 
 class ZenToolbox {
-   private formatter: Intl.NumberFormat
+   #formatter: Intl.NumberFormat
 
-   constructor(){
-      this.formatter = new Intl.NumberFormat('it-IT', {
+   constructor() {
+      this.#formatter = new Intl.NumberFormat('it-IT', {
          style: 'currency',
          currency: 'EUR',
          minimumFractionDigits: 2,
          maximumFractionDigits: 2
       })
+   }
+
+   /**
+    * @description Removes params from a url 
+    */
+   cleanPathname = (path: string = '') => path.split('?')[0]
+
+   /**
+    * @description Can't remember what it does, oops
+    */
+   getLabelsByValues = ({ values = [], options = [], list = false, separator = ', ' }) => {
+      const labels = options.reduce((acc, { value, label }) => {
+         if (values.includes(value)) return [...acc, label]
+         return acc
+      }, [])
+      return list ? labels.map(label => <div key={uniqueId()}>• {label}</div>) : labels.join(separator)
    }
 
    capitalize = (s: string) => s.substr(0, 1).toUpperCase() + s.substr(1).toLowerCase()
@@ -26,22 +44,6 @@ class ZenToolbox {
       })
    }
 
-   /**
-    * @description Takes an object as param and returns the same object in string format valid for gql queries
-    */
-   paramsToString = params => {
-      let str = ''
-      for (const key in params) {
-         if (isObject(params[key])) {
-            if (params[key] instanceof Array)
-               str += key + ':' + '[' + params[key].map(el => (isNaN(el) ? `"${el}"` : el)) + ']' + ', '
-            else str += key + ':' + this.paramsToString(params[key]) + ', '
-         } else if (isNaN(params[key])) str += key + ':"' + params[key] + '", '
-         else str += key + ':' + params[key] + ', '
-      }
-      return `{${str.slice(0, -2)}}`
-   }
-
    decamelize = (str: string, separator?: string) => {
       separator = typeof separator === 'undefined' ? ' ' : separator
 
@@ -53,6 +55,9 @@ class ZenToolbox {
       )
    }
 
+   /**
+    * @description Returns OptionType[] for fields that have multiple choice (chips)
+    */
    getMultipleInitValue = (vals: OptionType[] = [], options: OptionType[] = []) => {
       return cleanDeep(
          options.reduce((acc, val) => {
@@ -68,18 +73,17 @@ class ZenToolbox {
    }
 
    eurosToCents = (euros: number) => Math.trunc(euros * 100)
-   
+
    centsToEuros = (cents: number) => {
-      const formatted = this.formatter.format(cents / 100)
+      const formatted = this.#formatter.format(cents / 100)
       const res = formatted.replace(',', '.').replace('€', '').trim()
       return Number(res)
    }
 
-   centsToEurosFormatted = (cents: number) => this.formatter.format(cents / 100)
+   centsToEurosFormatted = (cents: number) => this.#formatter.format(cents / 100)
 
    /**
-    * 
-    * @description Given two objects it returns what changed from object 1 (older) to object 2 (newer)
+    * @description Given two objects it returns only what changed from object 1 (older) to object 2 (newer)
     */
    v2_deepDiff = (fromObject: Object, toObject: Object) => {
       const changes = {}
@@ -90,23 +94,23 @@ class ZenToolbox {
          for (const key of keys(fromObject)) {
             const currentPath = buildPath(path, fromObject, key)
             if (!has(toObject, key)) {
-            changes[currentPath] = get(toObject, key, null)
+               changes[currentPath] = get(toObject, key, null)
             }
          }
 
          for (const [key, to] of entries(toObject)) {
             const currentPath = buildPath(path, toObject, key)
             if (!has(fromObject, key)) {
-            changes[currentPath] = to
+               changes[currentPath] = to
             } else {
-            const from = get(fromObject, key)
-            if (!isEqual(from, to)) {
-               if (isObjectLike(to) && isObjectLike(from)) {
-                  walk(from, to, currentPath)
-               } else {
-                  changes[currentPath] = to
+               const from = get(fromObject, key)
+               if (!isEqual(from, to)) {
+                  if (isObjectLike(to) && isObjectLike(from)) {
+                     walk(from, to, currentPath)
+                  } else {
+                     changes[currentPath] = to
+                  }
                }
-            }
             }
          }
       }
@@ -116,6 +120,10 @@ class ZenToolbox {
       return changes
    }
 
+
+   /**
+    * @description Similar to v2 but this one returns an object for the fields that has been changed { from: 'aleks', to: 'messi' }
+    */
    deepDiff = (fromObject: Object, toObject: Object) => {
       const changes = {}
 
@@ -125,23 +133,23 @@ class ZenToolbox {
          for (const key of keys(fromObject)) {
             const currentPath = buildPath(path, fromObject, key)
             if (!has(toObject, key)) {
-            changes[currentPath] = { from: get(fromObject, key) }
+               changes[currentPath] = { from: get(fromObject, key) }
             }
          }
 
          for (const [key, to] of entries(toObject)) {
             const currentPath = buildPath(path, toObject, key)
             if (!has(fromObject, key)) {
-            changes[currentPath] = { to }
+               changes[currentPath] = { to }
             } else {
-            const from = get(fromObject, key)
-            if (!isEqual(from, to)) {
-               if (isObjectLike(to) && isObjectLike(from)) {
-                  walk(from, to, currentPath)
-               } else {
-                  changes[currentPath] = { from, to }
+               const from = get(fromObject, key)
+               if (!isEqual(from, to)) {
+                  if (isObjectLike(to) && isObjectLike(from)) {
+                     walk(from, to, currentPath)
+                  } else {
+                     changes[currentPath] = { from, to }
+                  }
                }
-            }
             }
          }
       }
@@ -150,6 +158,16 @@ class ZenToolbox {
 
       return changes
    }
+
+   getHeadersFromDraggableObject = (data: DraggableObject[] = []) => {
+      return data.reduce((acc, el) => {
+         return {
+            ...acc,
+            [el.id]: el.value
+         }
+      }, {})
+   }
 }
 
-export const zenToolboxInstance = new ZenToolbox()
+const zenToolbox = new ZenToolbox()
+export default zenToolbox

@@ -29,10 +29,6 @@ export type StepperFlowConfig = {
    setActiveStepRef: MutableRefObject<(step: number) => void>
 }
 
-/**
- * 
- * Only for linear steppers
- */
 export const useStepperFlow = <T extends string>(config: Config<T>) => {
    const { steps } = config
    const [status, setStatus] = useState<Record<T, SingleStepStatus>>(() => getInitVals(steps))
@@ -41,28 +37,29 @@ export const useStepperFlow = <T extends string>(config: Config<T>) => {
    const resetStatus = useCallback(() => {
       const initStatus = getInitVals(steps)
       setStatus(initStatus)
+      if (setActiveStepRef.current) setActiveStepRef.current(0)
    }, [JSON.stringify(steps)])
 
    const updateStatus = useCallback((prevStep: number, nextStep: number): void => {
-      if(prevStep === nextStep) return
-      if(nextStep === steps.length) {
+      if (prevStep === nextStep) return
+      if (nextStep === steps.length) {
          setStatus(produce(draft => {
             draft[steps[prevStep]].completed = true
          }))
          return
       }
       setStatus(
-        produce(draft => {
+         produce(draft => {
             draft[steps[nextStep]].active = true
             draft[steps[nextStep]].visited = true
             draft[steps[prevStep]].active = false
-            if(prevStep < nextStep && !draft[steps[prevStep]].completed) draft[steps[prevStep]].completed = true
-        })
+            if (prevStep < nextStep && !draft[steps[prevStep]].completed) draft[steps[prevStep]].completed = true
+         })
       )
    }, [steps.length])
 
    const backOneFromFinal = useCallback(() => {
-      if(setActiveStepRef.current) {
+      if (setActiveStepRef.current) {
          setStatus(produce(draft => {
             draft[steps[steps.length - 1]].active = true
          }))

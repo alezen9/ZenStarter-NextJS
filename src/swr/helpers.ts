@@ -1,10 +1,11 @@
-import { Draft } from "immer"
-import { isObject } from "lodash"
 import { ConfigStore } from "@_zustand/config/helpers"
+import { Draft } from "immer"
+import { reduce } from "lodash"
+import { ListResponse } from "src/SDK/types"
 
 export enum SwrKey {
-  MY_KEYS = 'MY_KEYS',
-  MY_KEY = 'MY_KEY'
+  USERS = 'USERS',
+  USER = 'USER'
 }
 
 
@@ -13,18 +14,8 @@ export const stateSelector = (state: ConfigStore) => ({
   openSnackbar: state.openSnackbar
 })
 
-const iterateAndAssign = (data, draft, prefix?: string) => {
-  for(const [key, val] of Object.entries(data)){
-    if(isObject(val)) iterateAndAssign(val, draft, key)
-    else draft[`${prefix ? `${prefix}.` : ''}${key}`] = val
-  }
-}
-
-export const mutateDraft = data => draft => {
-  iterateAndAssign(data, draft)
-}
-
-export type DirectMutationImmer<T> = ((draft: Draft<T>) => void)|((currentState: Readonly<T>, draft: Draft<T>) => void)
+export type MutateListImmer<T> = (draft: Draft<ListResponse<T>>) => void
+export type DirectMutationImmer<T> = (draft: Draft<T>) => void
 
 export interface MoreOptions {
   fromCache?: boolean
@@ -32,4 +23,22 @@ export interface MoreOptions {
   revalidateOnFocus?: boolean
   revalidateOnMount?: boolean
   shouldRetryOnError?: boolean
+}
+
+export interface ListOf<T> {
+    totalCount: number,
+    result: T[],
+    currentCount: number|undefined
+}
+
+export const getChangedValues = (newVals, oldVals) => {
+  const filteredValues = reduce(newVals, (acc, value, key) => {
+    if(/^(ignoreField_)/.test(key)) return acc // campi da ignorare
+    if (key !== '_id' && (['', undefined, null].includes(value) || value === oldVals[key])) return acc // ignoro campo vuoto o invariato che non sia _id (l'_id se c'è mi serve anche se invariato ovviamente)
+    return {
+      ...acc,
+      [key]: value
+    }
+  }, {})
+  return filteredValues
 }

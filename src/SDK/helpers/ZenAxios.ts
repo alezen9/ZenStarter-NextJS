@@ -15,7 +15,7 @@ class ZenAxios {
 				common: {
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
-					...(server.authHeader && { Authorization: `Bearer ${server.authHeader}` })
+					...(server.authHeader && { token: `${server.authHeader}` })
 				}
 			}
 		})
@@ -27,11 +27,11 @@ class ZenAxios {
 	private setRequestInterceptor(_self: AxiosInstance, tokenName): void {
 		_self.interceptors.request.use(
 			config => {
-				if (process.browser && !config.headers.common['Authorization'] && window.localStorage.getItem(tokenName)) {
+				if (process.browser && !config.headers.common['token'] && window.localStorage.getItem(tokenName)) {
 					const _token = window.localStorage.getItem(tokenName)
-					const authorization = `Bearer ${_token}`
-					config.headers.common['Authorization'] = authorization
-					_self.defaults.headers.common['Authorization'] = `Bearer ${_token}`
+					const authorization = `${_token}`
+					config.headers.common['token'] = authorization
+					_self.defaults.headers.common['token'] = authorization
 				}
 				return config
 			},
@@ -41,12 +41,53 @@ class ZenAxios {
 
 	private setResponseInterceptor(_self: AxiosInstance): void {
 		_self.interceptors.response.use(
-			response => response.data || null,
-			error => {
-				// get the error and throw the error string as shown below
-				throw get(error, 'response.data.errors[0].message', error)
-			}
+			res => {
+        const { data, params, headers, url, method } = res.config
+        const response = get(res, 'data.data', res.data)
+        this.LogRequest({
+          url,
+          method,
+          status: get(res, 'status', 200),
+          headers,
+          body: data ? JSON.parse(data) : {},
+          params,
+          response
+        })
+        return response
+      },
+      error => {
+        const { data, params, headers, url, method } = get(error, 'response.config', {})
+        const err = get(error, 'response.data', error)
+         this.LogRequest({
+          url,
+          method,
+          status: get(error, 'response.status', 400),
+          headers,
+          body: data ? JSON.parse(data) : {},
+          params,
+          response: err,
+          isError: true
+        })
+        throw err
+      }
 		)
+	}
+
+		private LogRequest = ({ url, method, status, response, headers, body = {}, params = {}, isError = false }) => {
+		if (publicRuntimeConfig.ENV === 'test') {
+			if(isError) {
+				console.error('Headers: \n', headers)
+				method === 'post' && console.error('Body: \n', body)
+				method === 'get' && console.error('Params: \n', params)
+				console.error('Response: \n', response)
+			} else {
+				console.groupCollapsed(`%c[${method}]: ${url}`, 'color: rgb(42, 156, 71);')
+				method === 'post' && console.log('Body: \n', body)
+				method === 'get' && console.log('Params: \n', params)
+				console.log(`Response: \n`, response)
+				console.groupEnd()
+			}
+		}
 	}
 }
 

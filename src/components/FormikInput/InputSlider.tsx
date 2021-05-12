@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Slider from '@material-ui/core/Slider'
 import Typography from '@material-ui/core/Typography'
 import { get } from 'lodash'
-import { ZenPalette } from '../../../palette'
+import { ZenPalette } from '@_MUITheme'
 
 const useStyles = makeStyles(theme => ({
   root: {

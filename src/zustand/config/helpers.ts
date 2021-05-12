@@ -1,9 +1,9 @@
-import { ThemeType } from '@_palette'
+import { ThemeType } from '@_MUITheme'
 import { ZenRoute, ZenRouteID } from '@_utils/routes/types'
-import { setSnackbarData } from '../helpers'
+import { setSnackbarData } from '@_zustand/helpers'
 
 export type PrevRoute = ZenRoute & {
-   exactURL: string
+   exactURL: string // keeps track of the exact url eg: users/4543jhbjhb34j5b34
 }
 
 export type ConfigStore = {

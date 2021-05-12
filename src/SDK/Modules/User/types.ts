@@ -1,3 +1,13 @@
-// types here
+import { Pagination } from "../../types"
 
-export const tmp = ''
+export type User = {
+   _id: string
+   fullName: string
+   // rest here
+}
+
+
+export type FiltersUser = Pagination & {
+  ids?: string[]
+  searchText?: string
+}

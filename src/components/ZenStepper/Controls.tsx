@@ -5,7 +5,7 @@ import ArrowForwardIosRoundedIcon from '@material-ui/icons/ArrowForwardIosRounde
 import DoneAllRoundedIcon from '@material-ui/icons/DoneAllRounded'
 import { useConfigStore } from '@_zustand/config'
 import { ConfigStore } from '@_zustand/config/helpers'
-import { ZenPalette } from '@_palette'
+import { ZenPalette } from '@_MUITheme'
 
 type Props = {
    handleBack: VoidFunction
@@ -64,40 +64,40 @@ const Controls = (props: Props) => {
    const isSmallScreen = useMediaQuery('(max-width: 850px)')
    return <Grid item xs={12} className={classes.gridContainer}>
       {activeStep === nSteps
-      ?  <div className={classes.endBtnContainer}>
-         {FinalActions
-            ?  React.cloneElement(FinalActions, { reset: handleReset })
-            :  <Button startIcon={<DoneAllRoundedIcon />} color='primary' variant='outlined' size='small' onClick={handleReset}>
+         ? <div className={classes.endBtnContainer}>
+            {FinalActions
+               ? React.cloneElement(FinalActions, { reset: handleReset })
+               : <Button startIcon={<DoneAllRoundedIcon />} color='primary' variant='outlined' size='small' onClick={handleReset}>
                   Fine
                </Button>}
          </div>
-      : <MobileStepper
-         variant="dots"
-         steps={nSteps}
-         position="static"
-         activeStep={activeStep}
-         classes={{ root: classes.mobileRoot, dots: classes.mobileDots }}
-         backButton={
-            isSmallScreen
-            ?  <IconButton disabled={activeStep === 0 || disablePrev} onClick={handleBack}>
-                  <ArrowBackIosRoundedIcon />
-               </IconButton>
-            :  <Button color='primary' variant='outlined' disabled={activeStep === 0 || disablePrev} onClick={handleBack}>
-                  <ArrowBackIosRoundedIcon style={{ marginRight: '.5em', fontSize: '.85em' }} />
-                  Back
+         : <MobileStepper
+            variant="dots"
+            steps={nSteps}
+            position="static"
+            activeStep={activeStep}
+            classes={{ root: classes.mobileRoot, dots: classes.mobileDots }}
+            backButton={
+               isSmallScreen
+                  ? <IconButton disabled={activeStep === 0 || disablePrev} onClick={handleBack}>
+                     <ArrowBackIosRoundedIcon />
+                  </IconButton>
+                  : <Button color='primary' variant='outlined' disabled={activeStep === 0 || disablePrev} onClick={handleBack}>
+                     <ArrowBackIosRoundedIcon style={{ marginRight: '.5em', fontSize: '.85em' }} />
+                  Indietro
                </Button>
-         }
-         nextButton={
-            isSmallScreen
-               ?  <IconButton disabled={disableNext} onClick={handleNext}>
+            }
+            nextButton={
+               isSmallScreen
+                  ? <IconButton disabled={disableNext} onClick={handleNext}>
                      <ArrowForwardIosRoundedIcon />
                   </IconButton>
-               :   <Button disabled={disableNext} color='primary' variant='outlined' onClick={handleNext}>
-                     Next
+                  : <Button disabled={disableNext} color='primary' variant='outlined' onClick={handleNext}>
+                     Avanti
                      <ArrowForwardIosRoundedIcon style={{ marginLeft: '.5em', fontSize: '.85em' }} />
                   </Button>
-         }
-      />}
+            }
+         />}
    </Grid>
 }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles, Switch } from '@material-ui/core'
-import { ZenPalette } from '../../../palette'
+import { ZenPalette } from '@_MUITheme'
 import { get } from 'lodash'
 
 const useStyles = makeStyles(theme => ({
@@ -32,7 +32,7 @@ const InputSwitch = (props: Props) => {
       <Switch
         classes={{ root: classes.rootCheckbox, track: classes.track }}
         name={name}
-        checked={get(values, name, false)}
+        checked={!!get(values, name, false)}
         onChange={onChange}
         color='primary'
       />

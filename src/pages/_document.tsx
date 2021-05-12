@@ -3,7 +3,7 @@ import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { ServerStyleSheets } from '@material-ui/core/styles'
 
 export default class MyDocument extends Document {
-  render () {
+  render() {
     return (
       <Html lang='en'>
         <Head>
@@ -11,14 +11,14 @@ export default class MyDocument extends Document {
           <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
           <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
 
-          <meta name='description' content='J.A.R.V.I.S.' />
+          <meta name='description' content='A Next.js starter by Aleksandar Gjoreski bla bla bla...' />
           <meta name='keywords' content='Keywords' />
           <meta name='mobile-web-app-capable' content='yes' />
-          <meta name='apple-mobile-web-app-title' content='FutBob' />
+          <meta name='apple-mobile-web-app-title' content='Zen Next.js starter' />
           <meta name='apple-mobile-web-app-capable' content='yes' />
           <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
-          <meta name='application-name' content='FutBob' />
-          <meta name='msapplication-tooltip' content='FutBob' />
+          <meta name='application-name' content='Zen Next.js starter' />
+          <meta name='msapplication-tooltip' content='Zen Next.js starter' />
           <meta name='msapplication-starturl' content='/' />
           <meta name='msapplication-tap-highlight' content='no' />
           {/* Icons */}
@@ -33,8 +33,8 @@ export default class MyDocument extends Document {
           {/* Manifest */}
           <link rel='manifest' href='/manifest.json' />
           {/* Other */}
-          <meta name='apple-mobile-web-app-title' content='FutBob' />
-          <meta name='application-name' content='FutBob' />
+          <meta name='apple-mobile-web-app-title' content='Zen Next.js starter' />
+          <meta name='application-name' content='Zen Next.js starter' />
           <meta name='msapplication-TileColor' content='#00aba9' />
           <meta name='theme-color' content='#222' />
           {/* Fonts */}
@@ -43,37 +43,57 @@ export default class MyDocument extends Document {
 
           <style global jsx>
             {`
+              #__next {
+                overflow-x: hidden;
+              }
+
+              /* Change Autocomplete styles in Chrome*/
+              input:-webkit-autofill,
+              input:-webkit-autofill:hover,
+              input:-webkit-autofill:focus,
+              textarea:-webkit-autofill,
+              textarea:-webkit-autofill:hover,
+              textarea:-webkit-autofill:focus,
+              select:-webkit-autofill,
+              select:-webkit-autofill:hover,
+              select:-webkit-autofill:focus {
+                -webkit-box-shadow: 0 0 0px 1000px rgba(0,0,0,.01) inset;
+                transition: background-color 5000s ease-in-out 0s;
+                -webkit-text-fill-color: grey !important;
+              }
+
+
+                     
 							@font-face {
 								font-family: Poppins;
 								src: url('/fonts/Poppins/Poppins-Regular.ttf') format('truetype');
 								font-display: swap;
 							}
 
+              @font-face {
+								font-family: Poppins;
+								src: url('/fonts/Poppins/Poppins-Light.ttf') format('truetype');
+								font-weight: 300;
+								font-display: swap;
+							}
+
 							@font-face {
+								font-family: Poppins;
+								src: url('/fonts/Poppins/Poppins-Medium.ttf') format('truetype');
+								font-weight: 500;
+								font-display: swap;
+							}
+
+              @font-face {
 								font-family: Poppins;
 								src: url('/fonts/Poppins/Poppins-Bold.ttf') format('truetype');
 								font-weight: bold;
 								font-display: swap;
 							}
 
-							@font-face {
-								font-family: Poppins;
-								src: url('/fonts/Poppins/Poppins-Italic.ttf') format('truetype');
-								font-style: italic;
-								font-display: swap;
-							}
-
-							@font-face {
-								font-family: Poppins;
-								src: url('/fonts/Poppins/Poppins-BoldItalic.ttf') format('truetype');
-								font-style: italic;
-								font-weight: bold;
-								font-display: swap;
-							}
-
 							#nprogress .bar {
-								background: rgb(42, 156, 71) !important;
-								background-color: rgb(42, 156, 71) !important;
+								background: rgb(214, 0, 86) !important;
+								background-color: rgb(214, 0, 86) !important;
 							}
 
 							#nprogress .spinner {
@@ -81,8 +101,7 @@ export default class MyDocument extends Document {
 							}
 
 							::-webkit-scrollbar {
-								/* width: 4px; */
-								width: 0;
+								width: 4px;
 								height: 4px;
 							}
 
@@ -97,6 +116,7 @@ export default class MyDocument extends Document {
 								border-radius: 10px;
 								background: rgba(158, 158, 158, 0.5);
 							}
+
 							::-webkit-calendar-picker-indicator {
 								filter: invert(50%);
 							}

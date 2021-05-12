@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 import dynamic from 'next/dynamic'
-const MuiPhoneNumber = dynamic(() => import('material-ui-phone-number'),{ssr:false})
+const MuiPhoneNumber = dynamic(() => import('material-ui-phone-number'), { ssr: false })
 import { makeStyles, FormHelperText } from '@material-ui/core'
 import { uniqueId, get, isEmpty } from 'lodash'
-import { ZenPalette } from '../../../palette'
+import { ZenPalette } from '@_MUITheme'
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -25,10 +25,10 @@ const useStyles = makeStyles(theme => ({
 const formatPhoneNumber = (val: string): string => {
   const res = [...(val || '').replace(/\s+/g, '')].map((el, i) => {
     return el === ' '
-    ? ''
-    : i === 2 || i === 5
-      ? `${el} `
-      : el 
+      ? ''
+      : i === 2 || i === 5
+        ? `${el} `
+        : el
   }).join('').slice(0, 15)
   return res
 }
@@ -44,14 +44,14 @@ type Props = {
 
 const InputPhone = (props: Props) => {
   const { label, onChange, values, name, disabled = false, errors } = props
-  const classes = useStyles({error: !!get(errors, name, null)})
-  const v: string = useMemo(() => !String(get(values, name, '')).startsWith('+') 
-    ? '+39' + get(values, name, '') 
+  const classes = useStyles({ error: !!get(errors, name, null) })
+  const v: string = useMemo(() => !String(get(values, name, '')).startsWith('+')
+    ? '+39' + get(values, name, '')
     : get(values, name, '')
-  , [get(values, name, null)])
+    , [get(values, name, null)])
 
   const handleChange = (v: string): void => {
-    if(v && !v.startsWith('+39')){
+    if (v && !v.startsWith('+39')) {
       const val = (v || '').replace(/\s+|\D/g, '')
       const val1 = val.startsWith('39')
         ? `+${val}`
@@ -63,7 +63,7 @@ const InputPhone = (props: Props) => {
 
   const onPaste = (e: any): void => {
     const paste = (e.clipboardData || window['clipboardData']).getData('text')
-    if(paste) handleChange(paste)
+    if (paste) handleChange(paste)
   }
 
   return (
@@ -82,7 +82,7 @@ const InputPhone = (props: Props) => {
         disabled={disabled}
         name={name}
       />
-      {!isEmpty(get(errors, name, false)) && <FormHelperText margin='dense' style={{ color: 'red', margin: '12px 14px 0 14px' }} id={`${uniqueId('phone-')}_error`}>{get(errors, name, '')}</FormHelperText>}
+      {!isEmpty(get(errors, name, false)) && <FormHelperText margin='dense' style={{ margin: '12px 14px 0 14px' }} id={`${uniqueId('phone-')}_error`}>{get(errors, name, '')}</FormHelperText>}
     </>
   )
 }

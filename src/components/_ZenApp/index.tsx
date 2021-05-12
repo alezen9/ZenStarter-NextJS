@@ -1,4 +1,4 @@
-import React, { ReactChild, ReactChildren, ReactNode, useCallback } from 'react'
+import React, { ReactChild, ReactChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react'
 import { CssBaseline, ThemeProvider, Snackbar, makeStyles, useTheme, useMediaQuery } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert'
 import { Offline, Online } from 'react-detect-offline'
@@ -6,17 +6,15 @@ import OfflinePage from '@_components/Offline'
 import Head from 'next/head'
 import Title from '@_components/Title'
 import ProgressBar from '@_components/ProgressBar'
-import lightTheme from 'lightTheme'
-import darkTheme from 'darkTheme'
 import { useConfigStore } from '@_zustand/config'
-import { ConfigInterface, SWRConfig } from 'swr'
+import { SWRConfiguration, SWRConfig } from 'swr'
 import dynamic from 'next/dynamic'
 import { ConfigStore } from '@_zustand/config/helpers'
 import SplashScreen from './SplashScreen'
 import ZenMenu from '@_components/_ZenMenu'
-import { zenHooksInstance } from '@_utils/hooks'
+import zenHooks from '@_utils/hooks'
+import { ThemeType, DarkTheme, LightTheme } from '@_MUITheme'
 const NProgress = dynamic(() => import("@_components/NProgress"), { ssr: false })
-
 
 const useStyles = makeStyles(theme => ({
    snackbar: {
@@ -27,7 +25,9 @@ const useStyles = makeStyles(theme => ({
    rootAlert: {
       display: 'flex',
       alignItems: 'center',
-      borderRadius: 12,
+      ...theme.type === ThemeType.dark && {
+         filter: 'saturate(.8)'
+      },
       [theme.breakpoints.down('xs')]: {
          width: '100%'
       }
@@ -44,12 +44,10 @@ const useStyles = makeStyles(theme => ({
       }
    },
    content: {
-   // width: (props: any) => !props.isLogged ? '100vw' : `calc(100vw - ${props.menuOpen ? 250 : 60}px)`,
       width: '100%',
       overflow: 'hidden auto',
       minHeight: '100vh',
       padding: '1.5em',
-      // marginTop: '4.5em', // per menu material ui
       transition: 'width .2s ease',
       [theme.breakpoints.down('sm')]: {
          position: 'relative',
@@ -67,53 +65,52 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const Alert = props => {
-  const { rootAlert, alertMessage } = useStyles()
-  return <MuiAlert
-    classes={{
-      root: rootAlert,
-      message: alertMessage
-    }}
-    elevation={6}
-    variant='filled'
-    {...props}
-  />
+   const { rootAlert, alertMessage } = useStyles()
+   return <MuiAlert
+      classes={{
+         root: rootAlert,
+         message: alertMessage
+      }}
+      elevation={6}
+      variant='filled'
+      {...props}
+   />
 }
 
 const stateSelector = (state: ConfigStore) => ({
-  themeType: state.themeType,
-  isLogged: state.isLogged,
-  menuOpen: state.menuOpen,
-  isLoading: state.isLoading,
-  snackbar: state.snackbar,
-  closeSnackbar: state.closeSnackbar,
-  openSnackbar: state.openSnackbar,
+   themeType: state.themeType,
+   isLogged: state.isLogged,
+   menuOpen: state.menuOpen,
+   isLoading: state.isLoading,
+   snackbar: state.snackbar,
+   closeSnackbar: state.closeSnackbar,
+   openSnackbar: state.openSnackbar,
 })
 
 type LSVariables = {
-   AS_PATH: string
    LSToken: string
    LSTheme: string
 }
 
 type Props = {
-   children: ReactChild|ReactChildren
+   children: ReactChild | ReactChildren
    title: string
    SplashscreenIcon: ReactNode
    LSVariables: LSVariables
-   swrConfig?: ConfigInterface
+   swrConfig?: SWRConfiguration
 }
 
 const ZenApp = (props: Props) => {
-   const { children, title, SplashscreenIcon, LSVariables: { AS_PATH, LSTheme, LSToken }, swrConfig } = props
-   const { themeType, menuOpen, /*isLogged,*/ isLoading, snackbar, closeSnackbar } = useConfigStore(stateSelector)
-   const isLogged = true
+   const { children, title, SplashscreenIcon, LSVariables: { LSTheme, LSToken }, swrConfig } = props
+   const { themeType, menuOpen, isLogged, isLoading, snackbar, closeSnackbar } = useConfigStore(stateSelector)
    const classes = useStyles({ menuOpen, isLogged })
    const _theme = useTheme()
    const isSmallScreen = useMediaQuery(_theme.breakpoints.down('sm'))
+   const theme = useMemo(() => themeType === ThemeType.light ? LightTheme : DarkTheme, [themeType])
 
-   const { isFirstRun } = zenHooksInstance.useInitWithAuthentication({ AS_PATH, LSToken })
-   zenHooksInstance.useWithThemeSwitch({ LSTheme })
-   const isPrivateRoute = zenHooksInstance.useIsPrivateRoute()
+   const { isFirstRun } = zenHooks.app.useInitWithAuthentication({ LSToken })
+   zenHooks.app.useWithThemeSwitch({ LSTheme })
+   const isPrivateRoute = zenHooks.app.useIsPrivateRoute()
 
    const handleClose = useCallback((e, reason) => {
       if (reason === 'clickaway') return
@@ -126,7 +123,7 @@ const ZenApp = (props: Props) => {
             <meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0' />
             <title>{title}</title>
          </Head>
-         <ThemeProvider theme={themeType === 'light' ? lightTheme : darkTheme}>
+         <ThemeProvider theme={theme}>
             <Online>
                <CssBaseline />
                {isFirstRun
@@ -135,12 +132,12 @@ const ZenApp = (props: Props) => {
                      {isLoading && !isSmallScreen ? <ProgressBar /> : <NProgress />}
                      {isLogged && isPrivateRoute && <ZenMenu />}
                      <div {...isLogged && { className: classes.content }}>
-                     {isLogged && isPrivateRoute && <Title />}
-                     {swrConfig
-                        ? <SWRConfig value={swrConfig} >
-                           {children}
-                        </SWRConfig>
-                     : children}
+                        {isLogged && isPrivateRoute && <Title />}
+                        {swrConfig
+                           ? <SWRConfig value={swrConfig} >
+                              {children}
+                           </SWRConfig>
+                           : children}
                      </div>
                   </div>}
                <Snackbar

@@ -5,29 +5,19 @@ export const privateRoutes: ZenRoute[] = [
    {
       _id: ZenRouteID.DASHBOARD,
       section: ZenSection.DASHBOARD,
+      isSectionEntryPoint: true,
       isPrivate: true,
       title: 'Dashboard',
       path: '/'
    },
-    // ============================ //
+   // ============================ //
    {
-      _id: ZenRouteID.ME,
-      section: ZenSection.ME,
+      _id: ZenRouteID.USERS,
+      section: ZenSection.USERS,
+      isSectionEntryPoint: true, // false if sub route es: users/:_id
       isPrivate: true,
-      title: 'Me',
-      path: '/me'
-   },
-   /*
-   example of a detail page
-   {
-      _id: ZenRouteID.EXAMPLE_DETAIL,
-      section: ZenSection.EXAMPLE,
-      isPrivate: true,
-      displayBack: true,
-      backRouteID: ZenRouteID.EXAMPLE_LIST,
-      title: 'Detail example',
-      path: '/example/detail/:_id',
-      as: ({ _id }) => `/example/detail/${_id}`
+      title: 'Users',
+      path: '/users'
    }
-   */
+   // ============================ //
 ]

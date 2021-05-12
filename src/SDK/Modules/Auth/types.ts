@@ -1,4 +1,8 @@
-export class AuthData {
+export type AuthData = {
 	token: string
-	expiresIn?: string
+}
+
+export type LoginInput = {
+	username: string
+	password: string
 }

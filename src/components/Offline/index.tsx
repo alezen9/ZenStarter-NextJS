@@ -1,6 +1,6 @@
 import React from 'react'
 import { Grid, makeStyles, Typography } from '@material-ui/core'
-import { ZenPalette } from '../../../palette'
+import { ZenPalette } from '@_MUITheme'
 
 const useStyles = makeStyles(({
   container: {
@@ -38,10 +38,10 @@ const OfflinePage = () => {
         <div className={classes.verticalDivider} />
         <Grid item>
           <Typography variant='body1'>
-          Oops!
+            Oops!
           </Typography>
           <Typography variant='body1'>
-          No internet access
+            No internet access
           </Typography>
         </Grid>
       </div>

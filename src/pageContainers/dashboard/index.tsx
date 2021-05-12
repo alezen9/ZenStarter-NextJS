@@ -23,12 +23,12 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const DashboardContainer = props => {
+const DashboardContainer = () => {
   const classes = useStyles()
 
   return (
     <div className={classes.main}>
-      <Typography className={classes.text} >It's gonna be lit!</Typography>
+      <Typography className={classes.text} >This is the way!</Typography>
     </div>
   )
 }

@@ -1,10 +1,10 @@
-import React, { useState, useMemo, Fragment, useCallback, ReactNode, ReactElement } from 'react'
+import React, { useState, useMemo, useCallback, ReactNode, ReactElement } from 'react'
 import { Button, Grid, Tooltip, IconButton, Menu, MenuItem, makeStyles, TableCell, Collapse, TableRow, useTheme, useMediaQuery } from '@material-ui/core'
 import { uniqueId, get, map, compact } from 'lodash'
 import MoreVertOutlinedIcon from '@material-ui/icons/MoreVertOutlined'
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded'
 import TypographyLabel from '../TypographyLabel'
-import { zenToolboxInstance } from '@_utils/Toolbox'
+import zenToolbox from '@_utils/toolbox'
 
 const useStyles = makeStyles(theme => ({
   menu: {
@@ -55,10 +55,10 @@ interface TableData {
 }
 
 export interface ZenTableSort {
-   colIDS: string[]
-   initialValue: { colID: string, isASC: boolean }
-   disableAll: boolean
-   onSortChange: (id: string, isASC: boolean) => void
+  colIDS: string[]
+  initialValue: { colID: string, isASC: boolean }
+  disableAll: boolean
+  onSortChange: (id: string, isASC: boolean) => void
 }
 
 interface SetDataIn extends TableData {
@@ -69,11 +69,11 @@ interface SetDataIn extends TableData {
 export interface SetDataOut {
   _headers: TableHeaderData[]
   _data: TableRowData[]
-  _isUserIndexRow: number|undefined
+  _isUserIndexRow: number | undefined
 }
 
-export const setData = <T extends SetDataIn>({ headers, data, withActions }:T):SetDataOut => {
-  const headerKeys = headers.map(({ name, id }) => id || zenToolboxInstance.camelize(name))
+export const setData = <T extends SetDataIn>({ headers, data, withActions }: T): SetDataOut => {
+  const headerKeys = headers.map(({ name, id }) => id || zenToolbox.camelize(name))
   const res = data.reduce((acc: SetDataOut, _row: TableRowData, i: number) => {
     const { _isUser, ...row } = _row
     acc._data = [
@@ -90,9 +90,9 @@ export const setData = <T extends SetDataIn>({ headers, data, withActions }:T):S
   return res as SetDataOut
 }
 
-interface SortRowIn { 
-  row: TableRowData, 
-  withActions?: boolean, 
+interface SortRowIn {
+  row: TableRowData,
+  withActions?: boolean,
   headerKeys: string[]
 }
 
@@ -103,17 +103,18 @@ type Action = {
   color?: string
 }
 
-const sortRow = <T extends SortRowIn>({ row, withActions = false, headerKeys }:T):TableRowData => {
+const sortRow = <T extends SortRowIn>({ row, withActions = false, headerKeys }: T): TableRowData => {
   let newRow: TableRowData = {}
   for (const key of headerKeys) newRow[key] = row[key]
   const actions: Action[] = row.actions || []
   return {
     ...newRow,
-    ...withActions && { actions: !actions.length
-      ? <></>
-      : actions.length > 1
-        ? <ActionsMenu actions={actions} />
-        : <Actions actions={actions} />
+    ...withActions && {
+      actions: !actions.length
+        ? <></>
+        : actions.length > 1
+          ? <ActionsMenu actions={actions} />
+          : <Actions actions={actions} />
     }
   }
 }
@@ -126,9 +127,10 @@ const Actions = React.memo((props: ActionProps) => {
   const { actions } = props
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'))
-  return isSmallScreen
-    ? <ActionTooltips actions={actions} />
-    : <ActionButtons actions={actions} />
+  return <ActionTooltips actions={actions} />
+  // return isSmallScreen
+  //   ? <ActionTooltips actions={actions} />
+  //   : <ActionButtons actions={actions} />
 })
 
 const ActionButtons = React.memo((props: ActionProps) => {
@@ -178,7 +180,7 @@ const ActionTooltips = React.memo((props: ActionProps) => {
   )
 })
 
-const ActionsMenu= React.memo((props: ActionProps) => {
+const ActionsMenu = React.memo((props: ActionProps) => {
   const { actions } = props
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null)
@@ -235,7 +237,7 @@ const ActionsMenu= React.memo((props: ActionProps) => {
           </MenuItem>
         })}
       </Menu>
-        </>
+    </>
   )
 })
 
@@ -266,14 +268,14 @@ export const MobileRowCell = React.memo((props: MobileRowCellProps) => {
 
   const { mainRow, mainName } = useMemo((): { mainRow: mainRowType[], mainName: string } => {
     const first = mainHeaders[0]
-    const mainName = zenToolboxInstance.camelize(first.id || first.name)
+    const mainName = zenToolbox.camelize(first.id || first.name)
     return {
       mainRow: [
         { name: row[mainName] },
         ...[...withActions
           ? row.actions
             ? [{ component: row.actions }]
-              : [{ name: ' ' }]
+            : [{ name: ' ' }]
           : []]
       ],
       mainName
@@ -303,12 +305,12 @@ export const MobileRowCell = React.memo((props: MobileRowCellProps) => {
         })}
       </TableRow>
       <TableRow className={classes.collapsableMobileRow}>
-         <CollapsableCell
-         open={open}
-         mainName={mainName}
-         colSpan={withActions ? 2 : 1}
-         _headers={_headers}
-         row={row} />
+        <CollapsableCell
+          open={open}
+          mainName={mainName}
+          colSpan={withActions ? 2 : 1}
+          _headers={_headers}
+          row={row} />
       </TableRow>
     </>
   )
@@ -316,45 +318,45 @@ export const MobileRowCell = React.memo((props: MobileRowCellProps) => {
 
 
 type CollapsableCellProps = {
-   open: boolean
-   mainName: string
-   colSpan: number
-   row: TableRowData
-   _headers: TableHeaderData[]
+  open: boolean
+  mainName: string
+  colSpan: number
+  row: TableRowData
+  _headers: TableHeaderData[]
 }
 
 const CollapsableCell = React.memo((props: CollapsableCellProps) => {
-   const { open = false, mainName = '', colSpan = 1, row = {}, _headers = [] } = props
-   const classes = useStyles()
+  const { open = false, mainName = '', colSpan = 1, row = {}, _headers = [] } = props
+  const classes = useStyles()
 
-   const data = useMemo(() => {
-      const res = map(row, (val, key) => {
-         if(['actions', mainName].includes(key) || ['-', '', ' '].includes(val)) return null
-         const found = _headers.find(({ name, id }) => (id || name) && zenToolboxInstance.camelize(id || name) === key)
-         return <TypographyLabel
-         key={`el-${key}-${uniqueId()}`}
-         label={found.name}
-         value={get(val, 'props.stringData', val) || '-'}
-         {...get(val, 'props.typoGraphyLabelPropsForward', {})}
-         sm={6} />
-      })
-      return compact(res)
-   }, [row, mainName, _headers.length])
-   
-   return <TableCell className={classes.collapsableMobileRowCell} colSpan={colSpan}>
-      <Collapse in={open} timeout='auto' unmountOnExit>
-         <Grid container spacing={2} style={{ margin: '1em auto', paddingLeft: 16 }}>
-            {data}
-         </Grid>
-      </Collapse>
-   </TableCell>
+  const data = useMemo(() => {
+    const res = map(row, (val, key) => {
+      if (['actions', mainName].includes(key) || ['-', '', ' '].includes(val)) return null
+      const found = _headers.find(({ name, id }) => (id || name) && zenToolbox.camelize(id || name) === key)
+      return <TypographyLabel
+        key={`el-${key}-${uniqueId()}`}
+        label={found.name}
+        value={get(val, 'props.stringData', val) || '-'}
+        {...get(val, 'props.typoGraphyLabelPropsForward', {})}
+        sm={6} />
+    })
+    return compact(res)
+  }, [row, mainName, _headers.length])
+
+  return <TableCell className={classes.collapsableMobileRowCell} colSpan={colSpan}>
+    <Collapse in={open} timeout='auto' unmountOnExit>
+      <Grid container spacing={2} style={{ margin: '1em auto', paddingLeft: 16 }}>
+        {data}
+      </Grid>
+    </Collapse>
+  </TableCell>
 })
 
 
 export const getLastStickyIndex = _headers => {
   const idx = _headers.reduce((acc, header, i) => {
     const { sticky } = header
-    if(sticky) acc = i
+    if (sticky) acc = i
     return acc
   }, 0)
   return idx

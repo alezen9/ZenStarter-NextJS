@@ -1,6 +1,6 @@
 import React from 'react'
 import { Checkbox, makeStyles } from '@material-ui/core'
-import { ZenPalette } from '../../../palette'
+import { ZenPalette } from '@_MUITheme'
 import { get } from 'lodash'
 
 const useStyles = makeStyles(theme => ({
@@ -33,7 +33,7 @@ const InputCheckbox = (props: Props) => {
         classes={{ root: classes.rootCheckbox }}
         name={name}
         disabled={disabled}
-        checked={get(values, name, false)}
+        checked={!!get(values, name, false)}
         onChange={onChange}
         color='primary'
       />

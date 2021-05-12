@@ -1,5 +1,4 @@
 import React, { ReactChildren, ReactChild } from 'react'
-import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -24,6 +23,7 @@ const CondexoLoadingMask = (props: Props) => {
   return (
     <AnimatePresence>
       <motion.div
+        style={{ width: '100%' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

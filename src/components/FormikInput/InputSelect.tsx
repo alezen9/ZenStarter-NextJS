@@ -2,7 +2,7 @@ import React, { useRef, useCallback } from 'react'
 import { get, sortBy, last, find } from 'lodash'
 import { Select, MenuItem, InputLabel, FormHelperText, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { ZenPalette } from '../../../palette'
+import { ZenPalette } from '@_MUITheme'
 import { OptionType } from '.'
 
 const useStyles = makeStyles(theme => ({
@@ -116,9 +116,9 @@ const InputSelect = (props: Props) => {
     (val: OptionType) => {
       if (multiple) {
         const res: OptionType = last(get(values, name, []))
-      return res 
-        ? get(res, 'component', <Typography style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>{res.label}</Typography>) 
-        : <></>
+        return res
+          ? get(res, 'component', <Typography style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>{res.label}</Typography>)
+          : <></>
       } else {
         const v = options.find(({ value }) => val === value)
         return <Typography style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>{get(v, 'component', v.label)}</Typography>
@@ -142,7 +142,7 @@ const InputSelect = (props: Props) => {
       >
         {Options(options)}
       </Select>
-      {get(errors, name, false) && <FormHelperText margin='dense' style={{ color: 'red', margin: '12px 14px 0 14px' }} id={`${id}_error`}>{get(errors, name, '')}</FormHelperText>}
+      {get(errors, name, false) && <FormHelperText margin='dense' style={{ margin: '12px 14px 0 14px' }} id={`${id}_error`}>{get(errors, name, '')}</FormHelperText>}
     </>
   )
 }

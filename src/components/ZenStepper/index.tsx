@@ -5,7 +5,7 @@ import Controls from './Controls';
 import { Grid, Step, Stepper, StepLabel, Typography, useMediaQuery, useTheme, StepIconProps } from '@material-ui/core'
 import { StepperFlowConfig } from './helper';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded'
-import { ZenPalette } from '@_palette';
+import { ZenPalette } from '@_MUITheme';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,7 +36,7 @@ const ZenStepper: React.FC<Props> = props => {
   const [activeStep, setActiveStep] = useState(0)
 
   useEffect(() => {
-     setActiveStepRef.current = setActiveStep
+    setActiveStepRef.current = setActiveStep
   }, [])
 
   const handleNext = useCallback(() => {
@@ -47,21 +47,21 @@ const ZenStepper: React.FC<Props> = props => {
       const nextStep = shouldUpdate
         ? state + 1
         : state
-      if(updateStatus) updateStatus(state, nextStep)
+      if (updateStatus) updateStatus(state, nextStep)
       return nextStep
     })
   }, [safeGuard])
 
   const handleBack = useCallback(() => {
     setActiveStep(state => {
-      if(state === 0) return 0
+      if (state === 0) return 0
       const shouldUpdate = safeGuard
         ? safeGuard(state, state - 1)
         : true
       const nextStep = shouldUpdate
         ? state - 1
         : state
-      if(updateStatus) updateStatus(state, nextStep)
+      if (updateStatus) updateStatus(state, nextStep)
       return nextStep
     })
   }, [safeGuard])
@@ -81,13 +81,13 @@ const ZenStepper: React.FC<Props> = props => {
                 StepIconComponent: CustomIconStepper(get(child, 'props.icon', null))
               }}>
               {!(get(child, 'props.icon', null) && isSmallScreen) && <Typography variant='caption'>
-              {get(child, 'props.title', 'Step sconosciuto')}
+                {get(child, 'props.title', 'Step sconosciuto')}
               </Typography>}
             </StepLabel>
           </Step>
         ))}
       </Stepper>
-      <Grid style={{ position: 'relative' , paddingBottom: 90}} justify='center' container spacing={3}>
+      <Grid style={{ position: 'relative', paddingBottom: 90 }} justify='center' container spacing={3}>
         {activeStep === children.length
           ? OnCompleteStep || <>Fine</>
           : get(children, `${activeStep}.props.component`, <>Unknown component</>)}

@@ -1,14 +1,14 @@
 import React from 'react'
 import { Grid, Typography } from '@material-ui/core'
-import { SuccessAnimated } from '@_components/AnimatedSuccess'
+import { SuccessAnimated } from 'src/assets/AnimatedSuccess'
 import { motion } from 'framer-motion'
 
 type Props = {
-   message: string
+  message: string
 }
 
 const SuccessAnimationCheck: React.FC<Props> = props => {
-   const { message } = props
+  const { message } = props
   return (
     <motion.div
       style={{ width: '100%' }}

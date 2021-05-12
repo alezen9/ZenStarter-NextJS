@@ -3,20 +3,10 @@ import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { sortBy, get } from 'lodash'
 import { makeStyles, FormHelperText, ListSubheader } from '@material-ui/core'
-import { ZenPalette } from '@_palette'
+import { ZenPalette } from '@_MUITheme'
 import { VariableSizeList } from 'react-window'
 import { OptionType } from '.'
 import { matchSorter } from 'match-sorter'
-// import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
-
-// const IGNORE_OPTION: OptionType = {
-//   value: '_ignoreField',
-//   label: 'Ignora campo',
-//   component: <span style={{ display: 'flex', alignItems: 'center', color: 'darkred' }}>
-//     <VisibilityOffOutlinedIcon style={{ marginRight: '1em' }} />
-//     Ignora campo
-//   </span>
-// }
 
 const useStyles = makeStyles(theme => ({
   listbox: (props: any) => ({
@@ -53,9 +43,7 @@ const useStyles = makeStyles(theme => ({
   groupLabel: {
     color: theme.palette.primary.main,
     fontWeight: 'bold',
-    backgroundColor: theme.type === 'light'
-      ? '#d3d3d3'
-      : '#111'
+    backgroundColor: ZenPalette.backgroundColorStandOut
   },
   noOptions: {
     color: ZenPalette.typographyGrey
@@ -134,9 +122,9 @@ const InputAutocomplete = (props: Props) => {
         getOptionLabel={option => option.label || ''}
         renderOption={option => get(option, 'component', option.label || '')}
         {...large && { ListboxComponent }}
-        renderInput={params => <TextField {...params} placeholder='Search . . .' label={label} variant='outlined' />}
+        renderInput={params => <TextField {...params} placeholder='Cerca...' label={label} variant='outlined' />}
       />
-      {get(errors, name, false) && <FormHelperText margin='dense' style={{ color: 'red', margin: '12px 14px 0 14px' }} id={`${id}_error`}>{get(errors, name, '')}</FormHelperText>}
+      {get(errors, name, false) && <FormHelperText margin='dense' style={{ margin: '12px 14px 0 14px' }} id={`${id}_error`}>{get(errors, name, '')}</FormHelperText>}
     </>
   )
 }
@@ -180,7 +168,7 @@ const useResetCache = data => {
 }
 
 // Adapter for react-window
-const ListboxComponent = React.forwardRef(function ListboxComponent (props, ref) {
+const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) {
   const { children, ...other } = props
   const itemData = React.Children.toArray(children)
   const itemCount = itemData.length

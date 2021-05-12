@@ -4,14 +4,14 @@ import React, { ReactNode } from 'react'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined'
 
 export type Action = {
-    type?: 'button'|'iconButton'
+    type?: 'button' | 'iconButton'
     icon?: ReactNode
     title?: string
-    variant?: 'contained'|'outlined'
-    iconPlacement?: 'start'|'end'
+    variant?: 'contained' | 'outlined'
+    iconPlacement?: 'start' | 'end'
     onClick: VoidFunction
     color?: string
-    materialColor?: 'primary'|'secondary'
+    materialColor?: 'primary' | 'secondary'
 }
 
 type Props = {
@@ -21,10 +21,11 @@ type Props = {
 
 const Actions = (props: Props) => {
     const { actions = [], showDivider = true } = props
+    if (!actions.length) return <></>
     return (
         <>
             {actions.map(action => <Action key={uniqueId('action-')} action={action} />)}
-            {actions.length && showDivider && <Divider style={{ marginLeft: '1em' }} orientation="vertical" flexItem />}
+            {showDivider && <Divider style={{ marginLeft: '1em' }} orientation="vertical" flexItem />}
         </>
     )
 }
@@ -34,7 +35,7 @@ type ActionProps = {
 }
 
 const Action = React.memo((props: ActionProps) => {
-    const { 
+    const {
         type = 'button',
         icon,
         title = '',
