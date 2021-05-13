@@ -78,7 +78,7 @@ const DesktopMenu = (props: Props) => {
    const { menuOpen, toggleMenu } = useConfigStore(stateSelector)
    const classes = useStyles({ menuOpen })
 
-   const _logout = useCallback((e: any) => {
+   const _logout = useCallback((e: Event) => {
       logout(menuOpen, toggleMenu)(e)
    }, [logout, menuOpen, toggleMenu])
 

@@ -13,8 +13,11 @@ const { publicRuntimeConfig } = getConfig()
 import 'nprogress/nprogress.css'
 import '@_components/_ZenMenu/MobileMenu/Navbar/Navbar.css'
 import '@_components/AnimatedSuccess/Success.css'
-
+// random icon
 import AcUnitRoundedIcon from '@material-ui/icons/AcUnitRounded'
+// REDUX
+import { Provider } from 'react-redux'
+import { store } from 'src/_redux'
 
 
 setLocale({
@@ -60,13 +63,15 @@ const MyApp = (props: AppProps) => {
 
    return (
       <>
-         <ZenApp
-            title={title}
-            LSVariables={{ LSTheme, LSToken }}
-            swrConfig={{ onError }}
-            SplashscreenIcon={<AcUnitRoundedIcon style={{ fontSize: '6em' }} />}>
-            <Component {...pageProps} />
-         </ZenApp>
+         <Provider store={store}>
+            <ZenApp
+               title={title}
+               LSVariables={{ LSTheme, LSToken }}
+               swrConfig={{ onError }}
+               SplashscreenIcon={<AcUnitRoundedIcon style={{ fontSize: '6em' }} />}>
+               <Component {...pageProps} />
+            </ZenApp>
+         </Provider>
       </>
    )
 }

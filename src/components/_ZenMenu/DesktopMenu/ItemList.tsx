@@ -49,6 +49,9 @@ const LOGOUT_ITEM: RouteItem = {
    icon: <ExitToAppRoundedIcon style={{ color: ZenPalette.lightRed, opacity: 0.7 }} />
 }
 
+const loginPath = routesPaths[ZenRouteID.LOGIN].path
+const homePath = routesPaths[ZenRouteID.DASHBOARD].path
+
 type Props = {
    items: RouteItem[]
    logout: (e: any) => void
@@ -60,7 +63,8 @@ const ItemList = (props: Props) => {
    const classes = useStyles()
 
    useEffect(() => {
-      router.prefetch('/login')
+      router.prefetch(homePath)
+      router.prefetch(loginPath)
    }, [])
 
    const handleRoute = useCallback(path => () => {

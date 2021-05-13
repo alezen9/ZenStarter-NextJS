@@ -32,7 +32,8 @@ const items: RouteItem[] = routes.reduce((acc, route) => {
    return acc
 }, [])
 
-export type logoutFn = (open: boolean, toggleMenu: VoidFunction) => VoidFunction
+type VoidFn = (e?: any) => void
+export type logoutFn = (open: boolean, toggleMenu: VoidFunction) => VoidFn
 
 const ZenMenu = () => {
    const theme = useTheme()

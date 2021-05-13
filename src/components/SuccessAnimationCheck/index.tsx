@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Typography } from '@material-ui/core'
-import { SuccessAnimated } from 'src/assets/AnimatedSuccess'
 import { motion } from 'framer-motion'
+import { SuccessAnimated } from '@_components/AnimatedSuccess'
 
 type Props = {
   message: string
