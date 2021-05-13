@@ -19,14 +19,14 @@ type AuthConfig = {
 	LSToken: string
 }
 
-type ZenRouteAuthIDS = ZenRouteID.DASHBOARD|ZenRouteID.LOGIN // dashboard + routes come ad esempio login, sign up
+type ZenRouteIDS = ZenRouteID.DASHBOARD|ZenRouteID.LOGIN // dashboard + routes come ad esempio login, sign up
 const publicRoutesIDS: ZenRouteID[] = publicRoutes.map(({ _id }) => _id)
 
 export class ZenAppFlowHooks {
-   #stateSelectorTheme: ConfigStoreSelector
-   #stateSelectorAuth: ConfigStoreSelector
-   #stateSelectorSetActiveRoute: ConfigStoreSelector
-   #paths: Partial<Record<ZenRouteAuthIDS, string>>
+   #stateSelectorTheme: ConfigStoreSelector // to manage theme
+   #stateSelectorAuth: ConfigStoreSelector // to manage auth
+   #stateSelectorSetActiveRoute: ConfigStoreSelector // to set active route
+   #paths: Partial<Record<ZenRouteIDS, string>>
 
    constructor(){
       this.#stateSelectorTheme = state => ({
@@ -112,6 +112,8 @@ export class ZenAppFlowHooks {
       }, [isCheckingToken, isFirstRun])
 
       // make public routes not accessible if user is logged in
+      // in questo caso pagine esterne tipo download tramite link da email o simili non funzioneranno
+      // bisogna tarare i check in base alle necessità (poca roba)
       useEffect(() => {
          if(!isCheckingToken && isLogged && publicRoutesIDS.includes(activeRoute._id) && activeRoute._id !== ZenRouteID.ERROR) {
             router.replace(this.#paths.DASHBOARD)

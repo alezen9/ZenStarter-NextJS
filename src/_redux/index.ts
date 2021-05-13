@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, Store, combineReducers, AnyAction, Dispatch } from 'redux'
+import { createStore, applyMiddleware, combineReducers, AnyAction } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
 /** modules here */
@@ -22,11 +22,11 @@ export type ZenReduxStore = {
 }
 
 class ReduxStore {
-  private rootReducer: Reducer<ZenReduxStore, AnyAction>
+  #rootReducer: Reducer<ZenReduxStore, AnyAction>
 
   constructor () {
     const reducers = this.combineReducers()
-    this.rootReducer = this.addResetEverything(reducers)
+    this.#rootReducer = this.addResetEverything(reducers)
   }
 
   private combineReducers = () => {
@@ -48,9 +48,9 @@ class ReduxStore {
     return rootReducer
   }
 
-  init = () => {
+  public init = () => {
     const store = createStore(
-      this.rootReducer,
+      this.#rootReducer,
       composeWithDevTools(
         applyMiddleware(
           thunk
