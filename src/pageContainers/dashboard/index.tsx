@@ -11,12 +11,6 @@ const useStyles = makeStyles(theme => ({
     height: '85vh',
     marginTop: '1em'
   },
-  deadpool: {
-    maxWidth: '70%',
-    position: 'absolute',
-    bottom: '-10vh',
-    right: 0
-  },
   text: {
     fontSize: '5em',
     fontWeight: 'bold'
