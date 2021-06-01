@@ -1,7 +1,6 @@
 import { FormikProps } from "formik"
 import { chunk, debounce, get } from "lodash"
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react"
-
 export class UtilsHooks {
    usePrevious = <T>(value: T): T => {
       const ref = useRef<T>(null)
@@ -58,14 +57,6 @@ export class UtilsHooks {
       }
    }
 
-   useDebouncedCallback = (callback, delay: number, deps = []) => {
-      const callbackRef = useRef(null)
-      callbackRef.current = callback;
-      return useCallback(debounce(
-         (...args) => callbackRef.current(...args),
-         delay,
-      ), [...deps])}
-
    useFieldArray = (params: { name: string, formik: FormikProps<any>, initialValue?: object }) => {
       const { name, formik, initialValue = {} } = params
       const { setFieldValue, setFieldTouched, values } = formik
@@ -104,5 +95,5 @@ export class UtilsHooks {
          pop,
          removeByIndex
       }), [push, unshift, pop, removeByIndex])
-      }
+   }
 }

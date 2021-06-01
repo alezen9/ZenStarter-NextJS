@@ -1,4 +1,4 @@
-const PREFIX = 'ZenNextStarter'
+const PREFIX = 'Quaestiones'
 
 // LS => LocalStorage
 

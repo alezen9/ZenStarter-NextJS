@@ -1,35 +1,11 @@
 export enum ZenRouteID {
    ERROR = 'ERROR',
    LOGIN = 'LOGIN',
-   DASHBOARD = 'DASHBOARD',
-   ADMINS = 'ADMINS',
-   ADMIN_CREATE = 'ADMIN_CREATE',
-   ADMIN_DETAIL = 'ADMIN_DETAIL',
-   USERS = 'USERS',
-   SUPPLIERS = 'SUPPLIERS',
-   SUPPLIER_CREATE = 'SUPPLIER_CREATE',
-   SUPPLIER_DETAIL = 'SUPPLIER_DETAIL',
-   REGISTERED_SERVICES = 'REGISTERED_SERVICES',
-   EXTERNAL_SERVICES = 'EXTERNAL_SERVICES',
-   IMPORT_EXPORT = 'IMPORT_EXPORT',
-   BANKS = 'BANKS'
+   HOME = 'HOME'
 }
 
 export enum ZenSection {
-   DASHBOARD = 'DASHBOARD',
-   ME = 'ME',
-   ADMINS = 'ADMINS',
-   USERS = 'USERS',
-   SUPPLIERS = 'SUPPLIERS',
-   REGISTERED_SERVICES = 'REGISTERED_SERVICES',
-   EXTERNAL_SERVICES = 'EXTERNAL_SERVICES',
-   IMPORT_EXPORT = 'IMPORT_EXPORT',
-   BANKS = 'BANKS'
-}
-
-export type ZenSubRoute = {
-   title: string
-   path: string
+   HOME = 'HOME'
 }
 
 export type ZenRoute = {
@@ -41,6 +17,4 @@ export type ZenRoute = {
    backRouteID?: ZenRouteID
    isPrivate: boolean
    section?: ZenSection
-   isSectionEntryPoint?: boolean
-   subpaths?: ZenSubRoute[]
 }

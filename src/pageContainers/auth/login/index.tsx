@@ -27,7 +27,7 @@ const LoginContainer = () => {
   }, [setIsLoading])
 
   const goToHome = useCallback(() => {
-    router.push(routesPaths[ZenRouteID.DASHBOARD].path)
+    router.push(routesPaths[ZenRouteID.HOME].path)
   }, [router.push])
 
   const formik = useFormik({

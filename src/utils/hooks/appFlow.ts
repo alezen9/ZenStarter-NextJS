@@ -19,7 +19,7 @@ type AuthConfig = {
 	LSToken: string
 }
 
-type ZenRouteIDS = ZenRouteID.DASHBOARD|ZenRouteID.LOGIN // dashboard + routes come ad esempio login, sign up
+type ZenRouteIDS = ZenRouteID.HOME|ZenRouteID.LOGIN // HOME + routes come ad esempio login, sign up
 const publicRoutesIDS: ZenRouteID[] = publicRoutes.map(({ _id }) => _id)
 
 export class ZenAppFlowHooks {
@@ -42,7 +42,7 @@ export class ZenAppFlowHooks {
          setActiveRoute: state.setActiveRoute
       })
       this.#paths = {
-         [ZenRouteID.DASHBOARD]: routesPaths[ZenRouteID.DASHBOARD].path,
+         [ZenRouteID.HOME]: routesPaths[ZenRouteID.HOME].path,
          [ZenRouteID.LOGIN]: routesPaths[ZenRouteID.LOGIN].path
       }
    }
@@ -116,7 +116,7 @@ export class ZenAppFlowHooks {
       // bisogna tarare i check in base alle necessità (poca roba)
       useEffect(() => {
          if(!isCheckingToken && isLogged && publicRoutesIDS.includes(activeRoute._id) && activeRoute._id !== ZenRouteID.ERROR) {
-            router.replace(this.#paths.DASHBOARD)
+            router.replace(this.#paths.HOME)
                .then(() => isMounted.current && setIsCheckingToken(false))
                .catch(() => isMounted.current && setIsCheckingToken(false))
          }
@@ -133,7 +133,7 @@ export class ZenAppFlowHooks {
                   .then(() => isMounted.current && setIsCheckingToken(false))
                   .catch(() => isMounted.current && setIsCheckingToken(false))
             } else if(isTokenValid.current && isPublicPath) { /** 1 */
-               router.replace(this.#paths.DASHBOARD)
+               router.replace(this.#paths.HOME)
                   .then(() => isMounted.current && setIsCheckingToken(false))
                   .catch(() => isMounted.current && setIsCheckingToken(false))
             } else { /** 3 & 4 */
@@ -145,7 +145,7 @@ export class ZenAppFlowHooks {
       useEffect(() => {
          // prefetch main routes
          router.prefetch(this.#paths.LOGIN)
-         router.prefetch(this.#paths.DASHBOARD)
+         router.prefetch(this.#paths.HOME)
          // rehydrate app (update server side styles)
          const jssStyles = document.querySelector('#jss-server-side')
          if (jssStyles) jssStyles.parentElement.removeChild(jssStyles)

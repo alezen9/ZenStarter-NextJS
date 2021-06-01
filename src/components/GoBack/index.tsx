@@ -11,7 +11,7 @@ type Props = {
   withMarginBottom?: boolean
 }
 
-const GoBack = (props: Props) => {
+const GoBack: React.FC<Props> = props => {
   const { label, withMarginBottom = true } = props
   const router = useRouter()
 

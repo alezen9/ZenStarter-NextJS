@@ -1,4 +1,4 @@
-import React, { ReactChild, ReactChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { ReactChild, ReactChildren, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CssBaseline, ThemeProvider, Snackbar, makeStyles, useTheme, useMediaQuery } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert'
 import { Offline, Online } from 'react-detect-offline'
@@ -11,9 +11,9 @@ import { SWRConfiguration, SWRConfig } from 'swr'
 import dynamic from 'next/dynamic'
 import { ConfigStore } from '@_zustand/config/helpers'
 import SplashScreen from './SplashScreen'
-import ZenMenu from '@_components/_ZenMenu'
 import zenHooks from '@_utils/hooks'
 import { ThemeType, DarkTheme, LightTheme } from '@_MUITheme'
+import _Header from '@_components/_Header'
 const NProgress = dynamic(() => import("@_components/NProgress"), { ssr: false })
 
 const useStyles = makeStyles(theme => ({
@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
       }
    },
    wrapper: {
-      display: 'flex',
+      // display: 'flex',
       width: '100vw',
       minHeight: '100vh',
       overflow: 'hidden auto'
@@ -106,10 +106,17 @@ const ZenApp = (props: Props) => {
    const classes = useStyles({ menuOpen, isLogged })
    const _theme = useTheme()
    const isSmallScreen = useMediaQuery(_theme.breakpoints.down('sm'))
-   const theme = useMemo(() => themeType === ThemeType.light ? LightTheme : DarkTheme, [themeType])
 
-   const { isFirstRun } = zenHooks.app.useInitWithAuthentication({ LSToken })
-   zenHooks.app.useWithThemeSwitch({ LSTheme })
+   const [isFirstRun, setIsFirstRun] = useState(true)
+
+   useEffect(() => {
+      setIsFirstRun(false)
+   }, [])
+
+   // const theme = useMemo(() => themeType === ThemeType.light ? LightTheme : DarkTheme, [themeType])
+
+   // const { isFirstRun } = zenHooks.app.useInitWithAuthentication({ LSToken })
+   // zenHooks.app.useWithThemeSwitch({ LSTheme })
    const isPrivateRoute = zenHooks.app.useIsPrivateRoute()
 
    const handleClose = useCallback((e, reason) => {
@@ -123,16 +130,17 @@ const ZenApp = (props: Props) => {
             <meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0' />
             <title>{title}</title>
          </Head>
-         <ThemeProvider theme={theme}>
+         <ThemeProvider theme={LightTheme}>
             <Online>
                <CssBaseline />
                {isFirstRun
                   ? <SplashScreen icon={SplashscreenIcon} />
                   : <div className={classes.wrapper}>
                      {isLoading && !isSmallScreen ? <ProgressBar /> : <NProgress />}
-                     {isLogged && isPrivateRoute && <ZenMenu />}
-                     <div {...isLogged && { className: classes.content }}>
-                        {isLogged && isPrivateRoute && <Title />}
+                     <_Header />
+                     {/* {isLogged ? <ZenMenuCustom /> : <ZenMenu />} */}
+                     <div className={classes.content}>
+                        <Title />
                         {swrConfig
                            ? <SWRConfig value={swrConfig} >
                               {children}

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useConfigStore } from '@_zustand/config'
 import { get } from 'lodash'
 import { ServerMessage } from '@_utils/serverMessages'
@@ -11,13 +11,9 @@ import getConfig from 'next/config'
 const { publicRuntimeConfig } = getConfig()
 // css
 import 'nprogress/nprogress.css'
-import '@_components/_ZenMenu/MobileMenu/Navbar/Navbar.css'
 import '@_components/AnimatedSuccess/Success.css'
 // random icon
 import AcUnitRoundedIcon from '@material-ui/icons/AcUnitRounded'
-// REDUX
-import { Provider } from 'react-redux'
-import { store } from 'src/_redux'
 
 
 setLocale({
@@ -42,14 +38,12 @@ const MyApp = (props: AppProps) => {
    const { openSnackbar } = useConfigStore(stateSelector)
    const title = useMemo(() => {
       switch (publicRuntimeConfig.ENV) {
-         case 'test':
-            return 'Test - Zen Next.js starter'
          case 'staging':
-            return 'Staging - Zen Next.js starter'
+            return 'Staging - Quaestiones'
          case 'prod':
-            return 'Zen Next.js starter'
+            return 'Quaestiones'
          default:
-            return 'Zen Next.js starter'
+            return 'Quaestiones'
       }
    }, [publicRuntimeConfig.ENV])
 
@@ -62,17 +56,13 @@ const MyApp = (props: AppProps) => {
       }, [openSnackbar])
 
    return (
-      <>
-         <Provider store={store}>
-            <ZenApp
-               title={title}
-               LSVariables={{ LSTheme, LSToken }}
-               swrConfig={{ onError }}
-               SplashscreenIcon={<AcUnitRoundedIcon style={{ fontSize: '6em' }} />}>
-               <Component {...pageProps} />
-            </ZenApp>
-         </Provider>
-      </>
+      <ZenApp
+         title={title}
+         LSVariables={{ LSTheme, LSToken }}
+         swrConfig={{ onError }}
+         SplashscreenIcon={<AcUnitRoundedIcon style={{ fontSize: '6em' }} />}>
+         <Component {...pageProps} />
+      </ZenApp>
    )
 }
 

@@ -44,7 +44,7 @@ const Custom404 = () => {
   }, [setActiveRoute])
 
   const goBackToSafety = useCallback(() => {
-    const homePath = routesPaths[ZenRouteID.DASHBOARD].path
+    const homePath = routesPaths[ZenRouteID.HOME].path
     router.push(homePath)
   }, [router.push])
 

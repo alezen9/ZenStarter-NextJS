@@ -13,7 +13,13 @@ export const publicRoutes: ZenRoute[] = [
       _id: ZenRouteID.LOGIN,
       isPrivate: false,
       title: 'Login',
-      path: '/auth/login'
+      path: '/login'
    },
    // ============================ //
+   {
+      _id: ZenRouteID.HOME,
+      isPrivate: false,
+      title: 'Home',
+      path: '/'
+   }
 ]

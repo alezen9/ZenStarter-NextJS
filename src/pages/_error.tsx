@@ -45,7 +45,7 @@ const Error = props => {
   }, [setActiveRoute])
 
   const goBackToSafety = useCallback(() => {
-    const homePath = routesPaths[ZenRouteID.DASHBOARD].path
+    const homePath = routesPaths[ZenRouteID.HOME].path
     router.push(homePath)
   }, [router.push])
 
